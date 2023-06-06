@@ -1,6 +1,6 @@
 # import jsonlines
 from config import CurrentConfig, getPredictJsonL, getPredictOutFile
-from prompt_mode import *
+from prompt_mode import PromptMode
 from utils import parseOneLineSqlFromQuery, str_to_bool
 import json
 import argparse
@@ -27,6 +27,7 @@ def initMetaData():
 
 databases = getDatabases()
 predictJsonL = getPredictJsonL(CurrentConfig)
+predictOutFile = getPredictOutFile(CurrentConfig)
 prompter = getPrompt()
 model = getModel()
 metaData = initMetaData()
@@ -84,12 +85,6 @@ def getMetaData(db_id):
 
 
 def infer_out(isTest):
-    total_token = 0
-
-
-    predictOutFile = getPredictOutFile(CurrentConfig, isTest)
-    print('predictOutFile: ', predictOutFile)
-
     with open(predictOutFile, mode="w") as writer:
         # for db in databases[:2]:
         end = 2
@@ -97,73 +92,16 @@ def infer_out(isTest):
             end = len(databases)
         # print("isTest: {}".format(isTest))
         # print("end: {}".format(end))
-        if CurrentConfig.TurnMode == TurnMode.Multi:
-            for db in databases[:end]:
-                history = []
-                if CurrentConfig.PromptMode == PromptMode.Single:
-                    metadata = getMetaData(db.db_id)
-                    init_prompt = prompter.getInitPrompt(metadata=metadata)
-                    print("init_prompt:")
-                    print(init_prompt)
-                    history = model.getInitHistory(init_prompt)
-                    # query, history = model.predict(init_prompt, history)
-                    
-                    for i, round in enumerate(db.rounds):
-                        print("Round %d" % i)
-                        print("---------------------history----------------------------\n")
-                        print(history)
-                        print()
-                        print("---------------------history----------------------------\n")
-                        print("utterance: %s" % round.utterance)
-                        # utterance_with_prompt = prompter.generate_input(utterance, getMetaData())  # TODO: 在已提供RawPrompt的情况下，还需要再依据MetaData形成新的Prompt
-                        # utterance_with_prompt = prompter.generate_input(round.utterance)
-                        try:
-                            utterance_with_prompt = prompter.generate_input(round.utterance)
-                            print("utterance_with_prompt: %s" % utterance_with_prompt)
-                            query, history, token_count = model.predict(utterance_with_prompt, history)
-                            total_token += token_count
-                            print("query: %s" % query)
-                            sql = parseOneLineSqlFromQuery(query)
-                            writer.write(sql)
-                        except Exception as e:
-                            writer.write("SQL NOT GET: may be TIMEOUT\n")
-                            if isTest:
-                                raise e
-                            print(e)
-                        finally:
-                            writer.flush()
-                    writer.write("\n")
-
-                else:
-                    for i, round in enumerate(db.rounds):
-                        print("Round %d" % i)
-                        print("---------------------history----------------------------\n")
-                        print(history)
-                        print()
-                        print("---------------------history----------------------------\n")
-                        print("utterance: %s" % round.utterance)
-                        utterance_with_prompt = prompter.generate_input(round.utterance)
-                        print("utterance_with_prompt: %s" % utterance_with_prompt)
-                        try:
-                            query, history = model.predict(utterance_with_prompt, history)
-                            print("query: %s" % query)
-                            sql = parseOneLineSqlFromQuery(query)
-                            writer.write(sql)
-                        except Exception as e:
-                            writer.write("SQL NOT GET: may be TIMEOUT\n")
-                            if isTest:
-                                raise e
-                            print(e)
-                        finally:
-                            writer.flush()
-                    writer.write("\n")
-        else:
-            for db in databases[:end]:
-                history = []
+        for db in databases[:end]:
+            history = []
+            if CurrentConfig.PromptMode == PromptMode.Single:
                 metadata = getMetaData(db.db_id)
-                init_prompt = prompter.getInitPrompt(metadata)
+                init_prompt = prompter.getInitPrompt(metadata=metadata)
                 print("init_prompt:")
                 print(init_prompt)
+                history = [[init_prompt, '好的']]
+                # query, history = model.predict(init_prompt, history)
+                
                 for i, round in enumerate(db.rounds):
                     print("Round %d" % i)
                     print("---------------------history----------------------------\n")
@@ -174,22 +112,40 @@ def infer_out(isTest):
                     # utterance_with_prompt = prompter.generate_input(utterance, getMetaData())  # TODO: 在已提供RawPrompt的情况下，还需要再依据MetaData形成新的Prompt
                     # utterance_with_prompt = prompter.generate_input(round.utterance)
                     try:
-                        utterance_with_prompt = '{}:\n{}'.format(init_prompt, round.utterance)
+                        utterance_with_prompt = prompter.generate_input(round.utterance)
                         print("utterance_with_prompt: %s" % utterance_with_prompt)
-                        query, history, token_count = model.predict(utterance_with_prompt, history)
-                        total_token += token_count
+                        query, history = model.predict(utterance_with_prompt, history)
                         print("query: %s" % query)
                         sql = parseOneLineSqlFromQuery(query)
                         writer.write(sql)
                     except Exception as e:
-                        writer.write("SQL NOT GET: may be TIMEOUT\n")
-                        if isTest:
-                            raise e
                         print(e)
+                        writer.write("SQL NOT GET: may be TIMEOUT\n")
                     finally:
                         writer.flush()
+                writer.write("\n")
 
-    print("total_token: ", total_token)
+            else:
+                for i, round in enumerate(db.rounds):
+                    print("Round %d" % i)
+                    print("---------------------history----------------------------\n")
+                    print(history)
+                    print()
+                    print("---------------------history----------------------------\n")
+                    print("utterance: %s" % round.utterance)
+                    utterance_with_prompt = prompter.generate_input(round.utterance)
+                    print("utterance_with_prompt: %s" % utterance_with_prompt)
+                    try:
+                        query, history = model.predict(utterance_with_prompt, history)
+                        print("query: %s" % query)
+                        sql = parseOneLineSqlFromQuery(query)
+                        writer.write(sql)
+                    except Exception as e:
+                        print(e)
+                        writer.write("SQL NOT GET: may be TIMEOUT\n")
+                    finally:
+                        writer.flush()
+                writer.write("\n")
 
 
 if "__main__" == __name__:

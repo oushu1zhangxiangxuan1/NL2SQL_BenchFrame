@@ -1,0 +1,157 @@
+eval_err_num:1
+medium pred: SELECT car_makers.FullName, COUNT(model_list.ModelId) AS ModelCount FROM car_makers INNER JOIN model_list ON car_makers.Id = model_list.Maker GROUP BY car_makers.FullName
+medium gold: SELECT Count ( * )  ,  T2.FullName  FROM MODEL_LIST AS T1 JOIN CAR_MAKERS AS T2 ON T1.Maker   =   T2.Id GROUP BY T2.id
+
+eval_err_num:2
+extra pred: SELECT car_names.Make, car_names.Model, COUNT(cars_data.Id) AS Popularity FROM cars_data INNER JOIN car_names ON cars_data.Id = car_names.MakeId GROUP BY car_names.Make, car_names.Model ORDER BY Popularity DESC
+extra gold: SELECT T1.model FROM MODEL_LIST AS T1 JOIN CAR_MAKERS AS T2 ON T1.Maker   =   T2.Id GROUP BY T2.id order by count ( * )  desc limit 1
+
+eval_err_num:3
+medium pred: SELECT car_makers.FullName, COUNT(model_list.ModelId) AS ModelCount FROM car_makers INNER JOIN model_list ON car_makers.Id = model_list.Maker GROUP BY car_makers.FullName HAVING COUNT(model_list.ModelId) >= 3
+medium gold: SELECT Count ( * )  ,  T2.FullName ,  T2.id FROM MODEL_LIST AS T1 JOIN CAR_MAKERS AS T2 ON T1.Maker   =   T2.Id GROUP BY T2.id having count ( * )   >=  3
+
+eval_err_num:4
+medium pred: SELECT Singer_ID, COUNT(*) AS 'Number of Concerts' FROM singer_in_concert GROUP BY Singer_ID
+medium gold: SELECT T2.name ,  count ( * )  FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.singer_id   =   T2.singer_id GROUP BY T2.singer_id
+
+easy pred: SELECT COUNT(DISTINCT Template_ID) FROM Templates
+easy gold: SELECT count ( distinct template_id )  FROM Documents
+
+easy pred: SELECT COUNT(*) FROM Templates WHERE Template_ID IN (SELECT Template_ID FROM Documents GROUP BY Template_ID HAVING COUNT(*) > 1)
+easy gold: SELECT count ( template_id )  FROM Documents GROUP BY template_id HAVING count ( * )   >  1
+
+eval_err_num:5
+easy pred: SELECT D.Document_ID, D.Document_Name, T.Template_ID FROM Documents D INNER JOIN Templates T ON D.Template_ID = T.Template_ID WHERE T.Template_ID IN (SELECT Template_ID FROM Documents GROUP BY Template_ID HAVING COUNT(*) > 1)
+easy gold: SELECT document_id FROM Documents GROUP BY template_id HAVING count ( * )   >  1
+
+eval_err_num:6
+medium pred: SELECT first_name FROM Students INNER JOIN Addresses ON Students.permanent_address_id = Addresses.address_id WHERE Addresses.country = 'Haiti'
+medium gold: SELECT T1.first_name FROM Students AS T1 JOIN Addresses AS T2 ON T1.permanent_address_id   =   T2.address_id WHERE T2.country   =   'Haiti'
+
+eval_err_num:7
+medium pred: SELECT last_name, line_1, line_2, line_3, city, zip_postcode, state_province_county, country FROM Students INNER JOIN Addresses ON Students.current_address_id = Addresses.address_id WHERE cell_mobile_number = '09700166582'
+medium gold: SELECT T1.last_name, * FROM Students as T1 join addresses as T2 on T1.current_address_id  =  T2.address_id WHERE T1.cell_mobile_number  =  '09700166582'
+
+eval_err_num:8
+hard pred: ```SQL SELECT s.Name FROM stadium s LEFT JOIN concert c ON s.Stadium_ID = c.Stadium_ID WHERE c.Year <> '2014' ``
+hard gold: SELECT name FROM stadium EXCEPT SELECT T2.name FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id   =   T2.stadium_id WHERE T1.year   =   2014
+
+eval_err_num:9
+easy pred: SQL SELECT Capacity FROM stadium WHERE Name = 'Balmoor'
+easy gold: select Capacity from stadium where name  =  'Balmoor'
+
+eval_err_num:10
+medium pred: SQL SELECT c.Theme FROM concert c INNER JOIN stadium s ON c.Stadium_ID = s.Stadium_ID WHERE s.Name = 'Balmoor'
+medium gold: select T2.Theme from stadium as T1 join concert as T2 on T1.Stadium_ID  =  T2.Stadium_ID where T1.Name  =  'Balmoor'
+
+eval_err_num:11
+hard pred: SELECT COUNT(*) FROM Dogs d INNER JOIN Treatments t ON d.dog_id = t.dog_id WHERE d.gender = 'F'
+hard gold: SELECT count ( * )  FROM Dogs WHERE dog_id IN  (  SELECT dog_id FROM Treatments  ) 
+
+eval_err_num:12
+hard pred: SELECT d.age FROM Dogs d INNER JOIN Treatments t ON d.dog_id = t.dog_id WHERE d.gender = 'F'
+hard gold: SELECT age FROM Dogs WHERE dog_id IN  (  SELECT dog_id FROM Treatments  ) 
+
+eval_err_num:13
+hard pred: SELECT MAX(d.weight) FROM Dogs d WHERE d.age = '2'
+hard gold: SELECT weight FROM Dogs WHERE age = 2 ORDER BY weight DESC LIMIT 1
+
+easy pred: SELECT COUNT(*) FROM Course
+easy gold: SELECT COUNT ( * )  FROM course_arrange
+
+medium pred: SELECT Teacher.Name, COUNT(Course_Arrange.Course_ID) FROM Teacher JOIN Course_Arrange ON Teacher.Teacher_ID = Course_Arrange.Teacher_ID GROUP BY Teacher.Name
+medium gold: SELECT T2.Name , COUNT ( * )  FROM course_arrange AS T1 JOIN teacher AS T2 ON T1.Teacher_ID  =  T2.Teacher_ID GROUP BY T2.Name
+
+eval_err_num:14
+easy pred: ``SELECT COUNT(*) FROM TV_Channel;``
+easy gold: SELECT count ( * )  FROM TV_Channel
+
+eval_err_num:15
+easy pred: ``SELECT Language FROM TV_Channel WHERE series_name = 'Sky Music';``
+easy gold: SELECT language FROM TV_Channel where series_name = 'Sky Music'
+
+eval_err_num:16
+easy pred: ``SELECT Title FROM Cartoon WHERE id = 2.0;``
+easy gold: SELECT title FROM Cartoon where id = 2.0
+
+medium pred: SELECT MAX(Horsepower) FROM cars_data
+medium gold: SELECT Horsepower FROM CARS_DATA ORDER BY Horsepower DESC LIMIT 1
+
+medium pred: SELECT District, MAX(Number_products) FROM shop GROUP BY District
+medium gold: SELECT district FROM shop ORDER BY number_products DESC LIMIT 1
+
+medium pred: SELECT Manager_name FROM shop WHERE Number_products = (SELECT MAX(Number_products) FROM shop)
+medium gold: SELECT manager_name FROM shop ORDER BY number_products DESC LIMIT 1
+
+medium pred: SELECT Number_products FROM shop WHERE Manager_name = (SELECT Manager_name FROM shop WHERE Number_products = (SELECT MAX(Number_products) FROM shop))
+medium gold: SELECT number_products FROM shop ORDER BY number_products DESC LIMIT 1
+
+medium pred: SELECT Location FROM shop WHERE District = (SELECT District FROM shop WHERE Number_products = (SELECT MAX(Number_products) FROM shop))
+medium gold: SELECT location FROM shop ORDER BY number_products DESC LIMIT 1
+
+medium pred: SELECT Shop_ID FROM shop WHERE Number_products = (SELECT MAX(Number_products) FROM shop)
+medium gold: SELECT shop_ID FROM shop ORDER BY number_products DESC LIMIT 1
+
+medium pred: SELECT Name, GNP, Population FROM country WHERE GovernmentForm = 'US Territory'
+medium gold: SELECT GNP, population FROM country WHERE GovernmentForm   =   "US Territory"
+
+easy pred: SELECT Name FROM shop
+easy gold: SELECT * FROM shop
+
+medium pred: SELECT Shop_ID, COUNT(Employee_ID) FROM hiring GROUP BY Shop_ID
+medium gold: SELECT count ( * )  FROM hiring AS t1 JOIN shop AS t2 ON t1.shop_id   =   t2.shop_id GROUP BY t2.name
+
+eval_err_num:17
+hard pred: SELECT COUNT(*) FROM singer_in_concert sic INNER JOIN singer s ON sic.Singer_ID = s.Singer_ID WHERE s.Name = 'Joe Sharp'
+hard gold: SELECT count ( * )  FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.singer_id   =   T2.singer_id where T2.name  =  "Joe Sharp" GROUP BY T2.singer_id
+
+                     easy                 medium               hard                 extra                all                  joint_all           
+count                27                   18                   6                    2                    53                   16                  
+=====================   EXECUTION ACCURACY     =====================
+execution            0.593                0.444                0.167                0.500                0.000                0.188               
+
+====================== EXACT MATCHING ACCURACY =====================
+exact match          0.667                0.167                0.167                0.500                0.434                0.188               
+
+---------------------PARTIAL MATCHING ACCURACY----------------------
+select               0.909                0.583                1.000                1.000                0.806                0.000               
+select(no AGG)       0.909                0.667                1.000                1.000                0.833                0.000               
+where                0.909                0.429                1.000                1.000                0.750                0.000               
+where(no OP)         0.909                0.429                1.000                1.000                0.750                0.000               
+group(no Having)     0.000                0.333                0.000                1.000                0.500                0.000               
+group                0.000                0.333                0.000                1.000                0.500                0.000               
+order                0.000                0.000                0.000                0.000                0.000                0.000               
+and/or               1.000                1.000                1.000                1.000                1.000                0.000               
+IUEN                 0.000                0.000                0.000                0.000                0.000                0.000               
+keywords             0.909                0.500                1.000                1.000                0.739                0.000               
+---------------------- PARTIAL MATCHING RECALL ----------------------
+select               0.741                0.389                0.167                0.500                0.547                0.000               
+select(no AGG)       0.741                0.444                0.167                0.500                0.566                0.000               
+where                0.769                0.500                0.200                1.000                0.600                0.000               
+where(no OP)         0.769                0.500                0.200                1.000                0.600                0.000               
+group(no Having)     0.000                0.200                0.000                0.500                0.200                0.000               
+group                0.000                0.200                0.000                0.500                0.200                0.000               
+order                0.000                0.000                0.000                0.000                0.000                0.000               
+and/or               1.000                1.000                1.000                1.000                1.000                0.000               
+IUEN                 0.000                0.000                0.000                0.000                0.000                0.000               
+keywords             0.667                0.294                0.167                0.500                0.425                0.000               
+---------------------- PARTIAL MATCHING F1 --------------------------
+select               0.816                0.467                0.286                0.667                0.652                1.000               
+select(no AGG)       0.816                0.533                0.286                0.667                0.674                1.000               
+where                0.833                0.462                0.333                1.000                0.667                1.000               
+where(no OP)         0.833                0.462                0.333                1.000                0.667                1.000               
+group(no Having)     1.000                0.250                1.000                0.667                0.286                1.000               
+group                1.000                0.250                1.000                0.667                0.286                1.000               
+order                1.000                1.000                1.000                1.000                1.000                1.000               
+and/or               1.000                1.000                1.000                1.000                1.000                1.000               
+IUEN                 1.000                1.000                1.000                1.000                1.000                1.000               
+keywords             0.769                0.370                0.286                0.667                0.540                1.000               
+
+
+                     turn 1               turn 2               turn 3               turn 4               turn >4             
+count                16                   16                   15                   5                    1                   
+=====================   TRUN XECUTION ACCURACY     =====================
+execution            0.562                0.375                0.400                0.800                1.000               
+
+====================== TRUN EXACT MATCHING ACCURACY =====================
+exact match          0.500                0.375                0.333                0.800                0.000               

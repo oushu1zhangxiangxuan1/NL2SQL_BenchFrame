@@ -1,0 +1,1624 @@
+SELECT * FROM 图书；
+SELECT * FROM 电子书；
+SELECT 书名， 电子书售价， COUNT(*) as 购买人数 FROM 图书 JOIN 电子书 ON 图书id = 电子书id GROUP BY 书名， 电子书售价 ORDER BY 电子书售价 DESC LIMIT 1
+SELECT 书名， 电子书售价， COUNT(*) as 购买人数 FROM 图书 JOIN 电子书 ON 图书id = 电子书id GROUP BY 书名， 电子书售价 ORDER BY COUNT(*) DESC, 电子书售价 ASC LIMIT 1
+SELECT 书名， 电子书售价， COUNT(*) as 购买人数， 会员价格 FROM 图书 JOIN 电子书 ON 图书id = 电子书id GROUP BY 书名， 电子书售价 ORDER BY COUNT(*) DESC, 电子书售价 ASC LIMIT 1
+SELECT 书名， 电子书售价， COUNT(*) as 购买人数， 会员价格 FROM 图书 JOIN 电子书 ON 图书id = 电子书id GROUP BY 书名， 电子书售价 ORDER BY COUNT(*) DESC, 电子书售价 ASC LIMIT 1, 1
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 平台.name FROM 图书 INNER JOIN 平台 ON 图书.平台id = 平台.平台id INNER JOIN 图书与平台 ON 图书.书名id = 图书与平台.书名id AND 平台.平台id = 图书与平台.平台id WHERE 图书.书名 = '大众心理研究学'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT 书名id FROM 图书_平台 WHERE 书籍id IN (SELECT 书名id FROM 图书_平台 WHERE 评分 > (SELECT 评分 FROM 图书_平台 WHERE 书籍id = 图书id)) ORDER BY 评分 DESC LIMIT 1
+SELECT COUNT(*) FROM 图书_平台 WHERE 书籍id IN (SELECT 书名id FROM 图书_平台 WHERE 购买人数 > 0) GROUP BY 平台id ORDER BY 购买人数 DESC LIMIT 1
+SELECT COUNT(*) FROM 图书_平台 WHERE 书籍id IN (SELECT 书名id FROM 图书_平台 WHERE 收藏人数 > 0) GROUP BY 平台id ORDER BY 收藏人数 DESC LIMIT 1
+SELECT COUNT(*) FROM 图书_平台 WHERE 书籍id IN (SELECT 书名id FROM 图书_平台 WHERE 购买人数 > 0) GROUP BY 平台id ORDER BY 购买人数 DESC LIMIT 1
+
+SELECT 书名， 平台id FROM 图书与平台 WHERE 缺货 = 1
+SELECT 作者 FROM 图书 WHERE 类型 = '小说'
+SELECT 类型 FROM 图书 WHERE 类型 = '小说' OR 类型 = '传记'
+
+SELECT * FROM 图书 JOIN 平台 ON 图书.平台id = 平台.平台id WHERE 图书.书名 = ( SELECT 书名 FROM 图书_平台 WHERE 图书_平台.图书id = 图书.图书id ORDER BY 收藏人数 DESC LIMIT 1 )
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT AVG(得分) AS平均得分 FROM 图书， 平台 WHERE 图书.图书id = 平台.平台id AND 平台.成立时间 = '2021-01-01' GROUP BY 图书.图书id, 平台.平台name
+SELECT COUNT(DISTINCT 评分人数) AS参与评分人数 FROM 图书， 平台 WHERE 图书.图书id = 平台.平台id AND 平台.成立时间 = '2021-01-01' GROUP BY 图书.图书id, 平台.平台name
+SELECT 平台name FROM 平台 WHERE 平台id = ( SELECT 平台id FROM 图书与平台 WHERE 图书.平台id = 平台.平台id AND 电子书.书名 = '我的书名' ) AND 电子书.平台id = 1
+
+SELECT节日， 民族id, 时间， 纪念 FROM 民俗节日 WHERE 民族id IN (SELECT 民族id FROM "民族" WHERE "民族"."名称" = '民族城市' ORDER BY "民族"."人口" DESC LIMIT 1)
+SELECT 纪念， 民族id, 时间， 名称 FROM "民俗节日" WHERE 纪念 IN (SELECT 纪念 FROM "民族城市" WHERE 民族id = (SELECT 民族id FROM "民族" WHERE "民族"."名称" = '民族城市' ORDER BY "民族"."人口" DESC LIMIT 1))
+SELECT 时间 FROM "民俗节日" WHERE 时间 = (SELECT 时间 FROM "民族城市" WHERE 民族id = (SELECT 民族id FROM "民族" WHERE "民族"."名称" = '民族城市' ORDER BY "民族"."人口" DESC LIMIT 1))
+
+SELECT COUNT(*) FROM "民族"
+SELECT DISTINCT "民族id" AS "民族id", "名称" AS "名称", "人口" AS "人口", "语言" AS "语言", "宗教信仰" AS "宗教信仰" FROM "民族"
+SELECT DISTINCT "民族id" AS "民族id", "人口" AS "人口", "语言" AS "语言", "宗教信仰" AS "宗教信仰" FROM "民族"
+SELECT (SELECT COUNT(*) FROM "民族") AS "人口数", "民族id" AS "民族id", "名称" AS "名称", "人口" AS "人口", "语言" AS "语言", "宗教信仰" AS "宗教信仰" FROM "民族"
+
+NO SQL FOUND
+SELECT * FROM "民族" WHERE "语言" = '语言'
+SELECT 城市名称， 人口 FROM "民族城市" WHERE 民族id = ( SELECT 民族id FROM "民族" WHERE "名称" = '民族城市'; )
+SELECT 人口 FROM "民族" WHERE 民族id = ( SELECT 民族id FROM "民族城市" WHERE 城市名称 = '北京'; )
+SELECT COUNT(*) as total_人口， sum(人口) as max_人口， sum(人口) over (ORDER BY人口) as min_人口 FROM "民族" GROUP BY 民族id
+
+SELECT 民族城市.人口， COUNT(DISTINCT 民族.人口) AS 民族比例 FROM 民族城市 JOIN 民族 ON 民族城市.民族id = 民族.民族id JOIN 民族 ON 民族城市.人口 = 民族.人口 GROUP BY 民族城市.城市名称， 民族.名称 ORDER BY 民族比例 DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT t1.级别 FROM "旅行社" t1 JOIN "出境游所含国家" t2 ON t1.旅行社id = t2.旅行社id JOIN "国内游路线" t3 ON t1.旅行社id = t3.旅行社id JOIN "邮轮路线" t4 ON t3.旅行社id = t4.旅行社id WHERE t2.路线id = ( SELECT路线id FROM "出境游所含国家" t5 WHERE t5.国家 = '法国' )
+SELECT * FROM "旅行社" t1 WHERE t1.级别 = '5A' GROUP BY t1.级别 HAVING COUNT(*) = ( SELECT COUNT(*) FROM "旅行社" t2 WHERE t2.名称 = '5A' AND t2.级别 = t1.级别 )
+SELECT t1.出境游路线数量 FROM "出境游路线" t1 JOIN "旅行社" t2 ON t1.旅行社id = t2.旅行社id JOIN "国内游路线" t3 ON t1.旅行社id = t3.旅行社id JOIN "邮轮路线" t4 ON t3.旅行社id = t4.旅行社id GROUP BY t1.旅行社id, t1.路线名称 HAVING COUNT(*) = ( SELECT COUNT(*) FROM "出境游路线" t5 WHERE t5.旅行社id = t2.旅行社id AND t5.路线名称 = t1.路线名称 )
+
+SELECT * FROM 公司 WHERE id IN ( SELECT id FROM音箱产品 WHERE名称 = '智能音箱' )
+SELECT 产品名称 FROM 音箱产品 WHERE 名称 = '智能音箱'
+SELECT 售价 FROM 音箱产品 WHERE 名称 = '智能音箱'
+SELECT 售价 FROM 音箱产品 WHERE 名称 = '智能音箱' GROUP BY 售价 ORDER BY 售价 DESC LIMIT 1
+
+SELECT t1.name FROM "公司" t1 JOIN "音箱产品" t2 ON t1.id = t2.所属公司id JOIN "产品销售" t3 ON t2.产品id = t3.产品id WHERE t3.季度 = ( SELECT季度 FROM "产品销售" t4 WHERE t4.销售量 = ( SELECT COUNT(*) FROM "音箱产品" t5 WHERE t5.产品名称 = t3.产品名称 ) ) AND t3.销售量增长 = ( SELECT COUNT(*) FROM "音箱产品" t5 WHERE t5.产品名称 = t3.产品名称 ) ORDER BY t1.name DESC
+SELECT * FROM "音箱产品" WHERE 所属公司id = ( SELECT 所属公司id FROM "公司" WHERE name = 'ABC 公司' )
+SELECT COUNT(*) FROM "产品销售" WHERE 产品名称 = '音箱产品'
+SELECT 产品名称， COUNT(*) FROM "产品销售" WHERE 产品名称 = '音箱产品' GROUP BY 产品名称 ORDER BY COUNT(*) DESC
+SELECT * FROM "产品销售" WHERE 产品名称 = '音箱产品' ORDER BY sales_date DESC HAVING COUNT(*) > 1
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+
+SELECT * FROM "国内游路线" WHERE 旅行社id = ( SELECT 旅行社id FROM "旅行社" WHERE 名称 = '中国' AND 级别 = '城市' )
+SELECT 路线名称 FROM "国内游路线" WHERE 旅行社id = ( SELECT 旅行社id FROM "旅行社" WHERE 名称 = '中国' AND 级别 = '城市' )
+SELECT 路线名称， 天数 FROM "国内游路线" WHERE 旅行社id = ( SELECT 旅行社id FROM "旅行社" WHERE 名称 = '中国' AND 级别 = '城市' )
+SELECT 路线名称 FROM "国内游路线" WHERE 天数 > ( SELECT MAX(天数) FROM "国内游路线" WHERE 旅行社id = ( SELECT 旅行社id FROM "旅行社" WHERE 名称 = '中国' AND 级别 = '城市' ) )
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT t1.路线名称， t1.旅行社id, t1.出发城市， t1.成人价格， t1.儿童价格， t1.景点数， t1.门票总价格 FROM "出境游所含国家" t1 INNER JOIN "国内游路线" t2 ON t1.路线id = t2.出境游路线id INNER JOIN "旅行社" t3 ON t2.旅行社id = t3.旅行社id WHERE t3.名称 = '中国'
+SELECT t1.路线名称， t1.旅行社id, t1.出发城市， t1.成人价格， t1.儿童价格， t1.景点数， t1.门票总价格 FROM "出境游所含国家" t1 INNER JOIN "国内游路线" t2 ON t1.路线id = t2.出境游路线id INNER JOIN "旅行社" t3 ON t2.旅行社id = t3.旅行社id WHERE t3.名称 = '中国' AND t1.家庭关系 = '包含'
+
+SQL NOT GET: may be TIMEOUT
+SELECT SUM(门票总价) AS total_price FROM "出境游路线" WHERE 旅行社id = ( SELECT 旅行社id FROM "旅行社" ORDER BY 旅行社id DESC LIMIT 1 )
+SELECT price FROM "旅游线路" WHERE路线id IN ( SELECT路线id FROM "出境游路线" ORDER BY路线id DESC LIMIT 1 )
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM "旅行社" WHERE 旅行社id = ( SELECT 旅行社id FROM "出境游所含国家" WHERE 路线id = ( SELECT 路线id FROM "国内游路线" WHERE 旅行社id = ( SELECT 旅行社id FROM "旅行社" WHERE 名称 = '5A级别的旅行社' ) ) AND 级别 = '5A级别的旅行社' )
+SELECT * FROM "旅行社" WHERE 旅行社id = ( SELECT 旅行社id FROM "出境游所含国家" WHERE 路线id = ( SELECT 路线id FROM "国内游路线" WHERE 旅行社id = ( SELECT 旅行社id FROM "旅行社" WHERE 名称 = '亚洲排名' ) ) AND 级别 = '亚洲排名' )
+SELECT * FROM "旅行社" ORDER BY 旅行社id DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+
+SELECT 书名， COUNT(*) AS 购买人数 FROM 图书 GROUP BY 书名 ORDER BY COUNT(*) DESC LIMIT 1
+SELECT 书名， 平台名 FROM 图书_平台 WHERE 图书id = ( SELECT 图书id FROM 图书 WHERE 书名 = '这本书' ) LIMIT 1
+SELECT 评分 FROM 图书_平台 WHERE 图书id = ( SELECT 图书id FROM 图书 WHERE 书名 = '这本书' ) LIMIT 1
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT MAX(下载量) AS max_download FROM "软件下载"
+SELECT DISTINCT软件名称 FROM "软件"
+SELECT 软件用途 FROM "软件"
+SELECT * FROM "软件" WHERE 用途 = '其他类似用途'"
+
+SELECT * FROM输入法 WHERE 名称 = '百度输入法' or 名称 = '搜狗输入法' or 名称 = '谷歌输入法'
+SELECT * FROM地图软件 WHERE 名称 = '百度地图' or 名称 = '高德地图' or 名称 = '腾讯地图'
+SELECT * FROM软件 WHERE 名称 = 'QQ' AND 商店id IN ( SELECT商店id FROM应用商店 WHERE 商店名 = '腾讯' )
+SELECT count(*) FROM应用商店 WHERE 商店名 = '腾讯'
+
+SELECT t1.累计下载次数 FROM "应用商店" t1 INNER JOIN "应用商店支持国家" t2 ON t1.商店id = t2.商店id INNER JOIN "软件" t3 ON t1.软件id = t3.软件id WHERE t2.国家 = '中国' AND t3.名称 = '酷安商店'
+SQL NOT GET: may be TIMEOUT
+SELECT t1.商店名， t2.应用商店支持国家， t3.软件下载 FROM "应用商店" t1 INNER JOIN "应用商店支持国家" t2 ON t1.商店id = t2.商店id INNER JOIN "软件" t3 ON t1.软件id = t3.软件id GROUP BY t1.商店名， t2.应用商店支持国家， t3.软件下载 HAVING COUNT(DISTINCT t2.应用商店支持国家) > 1
+SELECT * FROM "应用商店" INNER JOIN "应用商店支持国家" ON "应用商店"."商店id" = "应用商店支持国家"."商店id" INNER JOIN "软件" ON "应用商店"."软件id" = "软件"."软件id"
+
+SELECT * FROM "软件下载" WHERE "软件id" IN ( SELECT "软件id" FROM "应用商店" GROUP BY "应用商店id" ORDER BY "好评数" DESC LIMIT 1 )
+SELECT * FROM "软件下载" WHERE "应用商店id" IN ( SELECT "应用商店id" FROM "应用商店" GROUP BY "应用商店id" ORDER BY "下载量" DESC LIMIT 1 )
+SELECT * FROM "应用商店" LEFT JOIN "应用商店支持国家" ON "应用商店"."商店id" = "应用商店支持国家"."商店id" WHERE "应用商店支持国家"."国家" = '中国'
+
+SELECT COUNT(*) FROM "应用商店" WHERE "商店名" = '小米应用商店'
+SELECT SUM(CASE WHEN "累计下载次数" = 0 THEN 0 ELSE "软件下载"."累计下载次数" END) AS "软件下载次数" FROM "应用商店" INNER JOIN "软件下载" ON "应用商店"."商店id" = "软件下载"."应用商店id" GROUP BY "应用商店"."商店id"
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM "应用商店" WHERE "商店名" = '滴滴出行' AND "商店名" = '美团出行' AND "应用商店支持国家"."商店名" = '滴滴出行' AND "应用商店支持国家"."商店名" = '美团出行'
+SELECT "应用商店名", "软件下载"."好评数" FROM "应用商店支持国家" JOIN "软件" ON "软件下载"."软件id" = "软件"."软件id" WHERE "应用商店支持国家"."商店名" = '滴滴出行' AND "应用商店支持国家"."商店名" = '美团出行' AND "软件"."用途" = '软件下载'
+SELECT "应用商店名", "软件下载"."商店id" FROM "应用商店支持国家" JOIN "软件" ON "软件下载"."应用商店id" = "应用商店支持国家"."商店id" WHERE "应用商店支持国家"."商店名" = '滴滴出行' AND "应用商店支持国家"."商店名" = '美团出行' AND "软件"."用途" = '软件下载'
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM 餐饮公司城市消费 INNER JOIN 餐饮公司城市连锁 ON 餐饮公司城市消费.公司id = 餐饮公司城市连锁.公司id INNER JOIN 城市 ON 餐饮公司城市消费.城市id = 城市.城市id WHERE 城市.名称 = '北京'
+SELECT 公司名，所属集团 FROM 餐饮公司 GROUP BY 公司名，所属集团 ORDER BY COUNT(*) DESC
+SELECT 公司名， 主营业务 FROM 餐饮公司 GROUP BY 公司名 HAVING COUNT(DISTINCT 主营业务) = (SELECT COUNT(DISTINCT 主营业务) FROM 餐饮公司)
+SELECT 公司名 FROM 餐饮公司 ORDER BY 公司id DESC LIMIT 1
+
+SELECT * FROM "餐饮公司城市连锁" WHERE "城市id" IN (SELECT "城市id" FROM "城市")
+SELECT * FROM "餐饮公司城市连锁" WHERE (SELECT COUNT(*) FROM "餐饮公司城市消费" WHERE "城市id" = "城市") > 0
+SELECT "公司id", "员工数量" FROM "餐饮公司城市连锁" WHERE (SELECT COUNT(*) FROM "餐饮公司城市消费" WHERE "城市id" = "城市") > 0
+SELECT * FROM "餐饮公司城市连锁" WHERE (SELECT COUNT(*) FROM "餐饮公司城市消费" WHERE "城市id" = "城市") > 0
+SELECT 总面积 FROM "餐饮公司城市连锁" WHERE (SELECT SUM(占地面积) FROM "餐饮公司城市消费" WHERE "城市id" = "城市") > 0
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 平台id, COUNT(*) FROM 图书， 平台 WHERE 图书.图书id IN (SELECT 图书id FROM 平台) GROUP BY 平台id
+SELECT 平台id, COUNT(*) as count, sum(num) over (ORDER BY count) as max_count FROM 图书， 平台 WHERE 图书.图书id IN (SELECT 图书id FROM 平台) GROUP BY 平台id
+SELECT 书名， 作者， 出版社， 出版日期 FROM 图书 WHERE 出版日期 >= '2018-01-01' AND 出版日期 < '2019-12-31' AND 书名 in (SELECT 书名 FROM 天猫)
+
+SELECT t1.name as 平台名， t1.成立时间 as 成立时间 FROM 平台 t1 JOIN 图书与平台 t2 ON t1.平台id = t2.平台id WHERE t2.书名id IN (SELECT 书名id FROM 图书 WHERE 图书id = ?)
+SELECT t1.name as 平台名， t1.成立时间 as 成立时间， t1.is自营 FROM 平台 t1 JOIN 图书与平台 t2 ON t1.平台id = t2.平台id WHERE t2.书名id IN (SELECT 书名id FROM 图书 WHERE 图书id = ?)
+SQL NOT GET: may be TIMEOUT
+
+SELECT 书名， 平台id FROM 图书 JOIN 平台 ON 图书.图书id = 平台.平台id GROUP BY 书名， 平台id ORDER BY 销售额 DESC LIMIT 1
+SELECT 书名， 类型 FROM 图书 WHERE 书名 = '这本书' ORDER BY 类型 DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM 图书_平台 WHERE 书籍id IN (SELECT 书籍id FROM 图书_平台 WHERE 有货) AND 平台id IN (SELECT 平台id FROM 图书_平台 WHERE 有货)
+SELECT * FROM 图书_平台 WHERE 书籍id IN (SELECT 书籍id FROM 图书_平台 WHERE 有货) AND 平台id IN (SELECT 平台id FROM 京东_平台 WHERE 价格大于等于书售价 AND 自营)
+SELECT 评分 FROM 图书_平台 WHERE 书籍id IN (SELECT 书籍id FROM 图书_平台 WHERE 有货) AND 平台id IN (SELECT 平台id FROM 京东_平台 WHERE 价格大于等于书售价 AND 自营)
+
+SELECT * FROM 图书 JOIN 平台 ON 图书.平台id = 平台.平台id JOIN 图书与平台 ON 图书.图书id = 图书与平台.书名id WHERE 平台.是否自营 = 1
+SELECT营业额 FROM 平台 GROUP BY 平台名 ORDER BY 营业额 DESC LIMIT 10
+SELECT price FROM 平台 WHERE 平台id = '拼多多' GROUP BY 平台id ORDER BY price DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT SUM(书的价格 - 平台的的价格) AS相差 FROM 图书 INNER JOIN 平台 ON 图书.平台id =平台.平台id GROUP BY 图书.书名
+SELECT SUM(书的价格 - 平台的的价格) AS相差， 平台.会员费 AS平台_会员 FROM 图书 INNER JOIN 平台 ON 图书.平台id =平台.平台id GROUP BY 图书.书名， 平台.会员费
+
+SELECT t1.num, t2.num, AVG(t1.收视率) AS avg_收视率 FROM 电视剧 t1 INNER JOIN 电视剧收视 t2 ON t1.电视剧编号 = t2.电视剧编号 INNER JOIN 电视台 t3 ON t1.平台id = t3.平台id WHERE t3.name = '电视' GROUP BY t1.电视剧编号， t2.电视剧编号， t3.电视台id ORDER BY avg_收视率 DESC
+SELECT t1.剧名， t2.时间段， t3.电视台id FROM 电视剧 t1 INNER JOIN 电视剧收视 t2 ON t1.电视剧编号 = t2.电视剧编号 INNER JOIN 电视台 t3 ON t1.平台id = t3.平台id WHERE t3.name = '北京' GROUP BY t1.剧名， t2.时间段， t3.电视台id HAVING COUNT(DISTINCT t3.电视台id) = (SELECT COUNT(DISTINCT 电视台id) FROM 电视剧 WHERE 剧名 = '你的剧名') + 1
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM 电视台 WHERE 开播时间 >= '2022-01-01' AND 上线时间 <= '2022-01-01'
+SELECT 电视剧收视.时间段， 电视剧收视.收视率 FROM 电视剧收视 JOIN 电视剧 ON 电视剧收视.电视剧id = 电视剧.电视剧编号 JOIN 电视台 ON 电视剧收视.平台id = 电视台.词条id WHERE 电视台.名称 = 'XX电视台'
+SELECT 时间段， 收视率 FROM 电视剧收视 JOIN 电视剧 ON 电视剧收视.电视剧id = 电视剧.电视剧编号 JOIN 电视台 ON 电视剧收视.平台id = 电视台.词条id WHERE 电视台.名称 = 'XX电视台' GROUP BY 时间段 ORDER BY 收视率 DESC LIMIT 1
+SELECT 电视剧.剧名， 电视剧.出品公司， 电视剧.发行公司， 电视台.名称 FROM 电视剧 JOIN 电视剧 ON 电视剧.电视剧编号 = 电视剧.电视剧编号 JOIN 电视台 ON 电视剧.平台id = 电视台.词条id WHERE 电视台.名称 = 'XX电视台' GROUP BY 电视剧.剧名， 电视剧.出品公司， 电视剧.发行公司， 电视台.名称 HAVING COUNT(DISTINCT 电视剧.出品公司) > 1
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 出品公司 FROM 电视剧 WHERE 出品公司 != '苹果公司'
+SELECT 出品公司， COUNT(*) AS 出品数量 FROM 电视剧 WHERE 出品公司 != '苹果公司' GROUP BY 出品公司；
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM "球队"
+SELECT 赛区， 中文队名 FROM "球队"
+SELECT 联盟名称， 赛区， 球队id, 夺冠次数， 总教练 FROM "NBA总冠军"
+SELECT 球队id, 夺冠次数 FROM "NBA总冠军"
+
+SELECT * FROM "篮球运动员" t1 JOIN "NBA总冠军" t2 ON t1."球员id" = t2."球队id" WHERE t2."赛季" = '2003' AND t1."参加选秀年" = '2002'
+SELECT * FROM "篮球运动员" t1 JOIN "NBA总冠军" t2 ON t1."球员id" = t2."球队id" WHERE t2."赛季" = '2003' AND t1."毕业院校" = '清华大学'
+SELECT * FROM "篮球运动员" t1 JOIN "NBA总冠军" t2 ON t1."球员id" = t2."球队id" WHERE t2."赛季" = '2003' AND t1."是否状元" = 1
+SELECT * FROM "篮球运动员" t1 JOIN "NBA总冠军" t2 ON t1."球员id" = t2."球队id" WHERE t2."赛季" = '2003' AND t1."进入球队" = 'NBA总冠军'
+
+SELECT * FROM "MVP记录" WHERE 赛季 = '2022' AND 球员id IN ( SELECT 球员id FROM "篮球运动员" WHERE 中文名 = 'MVP队员' AND 参加选秀年 = 2022 ) ON DELETE NO ACTION ON UPDATE NOACTION
+SELECT * FROM "球队" WHERE 球队id NOT IN ( SELECT 球队id FROM "篮球运动员" ) ON DELETE NOACTION
+SELECT * FROM "NBA总冠军" WHERE 赛季 = '2022' AND 球队id IN ( SELECT 球队id FROM "篮球运动员" ) ON DELETE NOACTION ON UPDATE NOACTION
+
+SELECT t1.球队id FROM "球队" t1 JOIN "NBA总冠军" t2 ON t1.球队id = t2.球队id JOIN "MVP记录" t3 ON t2.球队id = t3.所属球队 WHERE t2.赛季 = ( SELECT 赛季 FROM "NBA总冠军" WHERE 球队id = ( SELECT 球队id FROM "球队" WHERE 中文队名 = 'NBA总冠军' ) )
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "出版图书" WHERE "作者id" = ( SELECT "作者id" FROM "作者" WHERE "姓名" = '张三' )
+SELECT * FROM "网络小说" ORDER BY "评分" DESC LIMIT 1
+SELECT (SELECT COUNT(*) FROM "畅销榜" WHERE "网络小说id" = ( SELECT "网络小说id" FROM "网络小说" WHERE "书名" = '网络小说名称' ORDER BY "周排名" DESC LIMIT 1 )) AS总排名 FROM "网易云音乐"
+SELECT "书名", "价格" FROM "图书" WHERE "作者id" = ( SELECT "作者id" FROM "作者" WHERE "姓名" = '张三' )
+
+SELECT * FROM "网络小说" WHERE "网络小说"."状态" = '完结'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM出版图书 WHERE 书名='人类简史'
+SELECT 书名， COUNT(*) as 点击数 FROM出版图书 WHERE 出版图书id=('人类简史') GROUP BY 书名
+SELECT 作者id FROM作者 WHERE 姓名='人类简史'
+
+SELECT * FROM "作者" WHERE id IN ( SELECT作者id FROM "出版图书" WHERE书名 = '平台' )
+SELECT * FROM "作者" ORDER BY age DESC LIMIT 1
+SELECT * FROM "作品" WHERE id IN ( SELECT作品id FROM "作者" WHERE id IN ( SELECT作者id FROM "出版图书" WHERE书名 = '小说' ) )
+SELECT * FROM "书籍" WHERE 书名 = '这是一本什么类型的书籍'
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM畅销榜 WHERE月排名 = ( SELECT月排名 FROM畅销榜 ORDER BY月排名 DESC LIMIT 1 )
+SELECT * FROM畅销榜 WHERE 总排名 = ( SELECT 总排名 FROM畅销榜 ORDER BY 总排名 DESC LIMIT 1 )
+SQL NOT GET: may be TIMEOUT
+
+SELECT 网络小说.书名， 网络小说.作者id, COUNT(*) as 周排名 FROM 网络小说 JOIN畅销榜 ON 网络小说.网络图书id =畅销榜.网络小说id JOIN收藏榜 ON 网络小说.网络图书id =收藏榜.网络小说id GROUP BY 网络小说.网络图书id, 网络小说.作者id ORDER BY 周排名 DESC LIMIT 1
+SELECT 网络小说.书名， 网络小说.作者id, COUNT(*) as 月排名 FROM 网络小说 JOIN畅销榜 ON 网络小说.网络图书id =畅销榜.网络小说id JOIN收藏榜 ON 网络小说.网络图书id =收藏榜.网络小说id GROUP BY 网络小说.网络图书id, 网络小说.作者id ORDER BY 月排名 DESC LIMIT 1
+SELECT 网络小说.书名， 网络小说.作者id, COUNT(*) as 总排名 FROM 网络小说 JOIN畅销榜 ON 网络小说.网络图书id =畅销榜.网络小说id JOIN收藏榜 ON 网络小说.网络图书id =收藏榜.网络小说id GROUP BY 网络小说.网络图书id, 网络小说.作者id ORDER BY 总排名 DESC LIMIT 1
+SELECT作者.姓名 as 作者id FROM作者 JOIN出版图书 ON作者.作者id =出版图书.作者id JOIN网络小说 ON出版图书.出版图书id =网络小说.网络图书id WHERE 网络小说.书名 = '这本书的名字' GROUP BY作者.姓名 ORDER BY作者id DESC LIMIT 1
+SELECT作者.年龄 as 作者age FROM作者 JOIN出版图书 ON作者.作者id =出版图书.作者id JOIN网络小说 ON出版图书.出版图书id =网络小说.网络图书id WHERE作者.年龄 > 0 GROUP BY作者.年龄 ORDER BY 作者age DESC LIMIT 1
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM出版图书 ORDER BY点击数 DESC LIMIT 1
+SELECT * FROM "出版图书" WHERE 点击数 = ( SELECT MAX(点击数) FROM "网络小说" GROUP BY "网络图书id" )
+SELECT "网络小说id", type, SUM(评分) as评分， SUM(评价人数) as评价人数， SUM(字数) as字数， SUM(点击数) as点击数 FROM "网络小说" GROUP BY "网络小说id" ORDER BY评分 DESC LIMIT 10
+
+SELECT * FROM "网络小说" WHERE "网络小说"."状态" = "已更新"
+SELECT * FROM "网络小说" ORDER BY "网络小说"."价格" DESC LIMIT 1
+SELECT SUM(CASE WHEN "网络小说"."状态" = "已购买" THEN 1 WHEN "网络小说"."状态" = "未购买" THEN 2 ELSE 0 END) AS 花费 FROM "网络小说" GROUP BY "网络小说"."网络图书id" ORDER BY 花费 DESC LIMIT 10
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+
+SELECT台风.台风id, ORDER BY台风.登陆时间先后 LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SELECT 台风.台风id, 台风.名称， 台风.登陆地点， 台风.登陆时间， AVG(经济损失) AS 经济损失， COUNT(*) AS 影响国家数 FROM "台风" INNER JOIN "台风影响的国家" ON "台风"."台风id" = "国家"."台风id" GROUP BY "台风"."台风id", "台风"."名称", "台风"."登陆地点", "台风"."登陆时间", AVG(经济损失) WHERE "台风"."登陆地点" IN (SELECT 省份.省份 FROM "台风影响的中国省份" 省份) LIMIT 1
+SQL NOT GET: may be TIMEOUT
+
+SELECT 台风id, sum(经济损失) as 经济损失 FROM "台风影响的国家" GROUP BY 台风id ORDER BY 经济损失 DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+
+SELECT * FROM "应用商店" WHERE "商店名" = '打车软件' AND "应用商店支持国家"."商店名" = '打车软件' AND "应用商店支持国家"."应用软件数" > 0 AND "应用商店支持国家"."累计下载次数" > 0 AND "软件"."软件id" = '打车软件'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT t1.time AS登陆时间 FROM "台风" t1 WHERE t1.name = '利奇马'
+SELECT t1.time AS登陆时间， t2.name AS 登陆地点 FROM "台风" t1 JOIN "台风" t2 ON t1.id = t2.id AND t1.name = '利奇马'
+SELECT t1.省份 FROM "台风" t1 JOIN "台风影响的国家" t2 ON t1.id = t2.台风id WHERE t2.name = '利奇马'
+SELECT t3.name FROM "台风影响的国家" t3 JOIN "台风" t4 ON t3.台风id = t4.id WHERE t4.name = '利奇马'
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM "台风" WHERE "台风id" = ( SELECT "台风id" FROM "台风影响的中国省份" WHERE "省份" = '浙江' ORDER BY "登陆时间" DESC LIMIT 1 )
+SELECT SUM(CASE WHEN "死亡人数" > 0 THEN "死亡人数" END) / COUNT("死亡人数") AS "死亡人数_avg", SUM(CASE WHEN "死亡人数" > 0 THEN "经济损失" END) / COUNT("经济损失") AS "经济损失_avg" FROM "台风影响的国家" WHERE "国家" = '中国' GROUP BY "台风id" ORDER BY "死亡人数_avg" DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SELECT (SELECT COUNT(*) FROM "台风影响的国家" WHERE "国家" = '中国') + 1 AS "国家_count" FROM "台风影响的国家" WHERE "国家" = '中国' GROUP BY "台风id" ORDER BY "国家_count" DESC LIMIT 1
+
+SELECT * FROM "作者" WHERE "作者id" = ( SELECT "作者id" FROM "出版图书" WHERE "书名" = '网文' ORDER BY "年龄" DESC LIMIT 1 )
+SELECT * FROM "出版图书" WHERE "书名" = '实体书' ORDER BY "年龄" DESC LIMIT 1
+SELECT * FROM "作者" WHERE "作者id" IN ( SELECT "作者id" FROM "出版图书" WHERE "书名" = '小说' ORDER BY "年龄" DESC LIMIT 1 ); SELECT * FROM "作者" WHERE "作者id" IN ( SELECT "作者id" FROM "出版图书" WHERE "书名" = '诗歌' ORDER BY "年龄" DESC LIMIT 1 )
+SELECT COUNT(*) FROM "出版图书" WHERE "书名" = '实体书' ORDER BY "年龄" DESC LIMIT 1
+SELECT * FROM "网络小说" WHERE "作者id" IN ( SELECT "作者id" FROM "作者" WHERE "姓名" = '莫言' ORDER BY "年龄" DESC LIMIT 1 )
+
+SELECT 小说.书名， 小说.作者id, 小说.评分， 畅销榜.周排名， 畅销榜.月排名， 收藏榜.总排名 FROM 小说 INNER JOIN 畅销榜 ON 小说.书名 =畅销榜.书名 INNER JOIN 收藏榜 ON 小说.书名 =收藏榜.书名 WHERE 畅销榜.周排名 >=收藏榜.周排名 AND畅销榜.月排名 >=收藏榜.月排名 AND畅销榜.总排名 >=收藏榜.总排名 AND小说.作者id =收藏榜.作者id
+SELECT 作者.姓名 FROM 出版图书 INNER JOIN 作者 ON 出版图书.作者id =作者.作者id WHERE 出版图书.书名 = '小说名称' AND作者.姓名 = '作者姓名'
+SQL NOT GET: may be TIMEOUT
+SELECT column_name FROM table_name ORDER BY column_name ASC
+SQL NOT GET: may be TIMEOUT
+
+SELECT COUNT(*) AS num FROM "网络小说" AS t1 JOIN "畅销榜" AS t2 ON t1.网络图书id = t2.网络小说id WHERE t1.书名 = '唐七公子'
+SELECT t1.书名， t1.作者id, t2.num AS印刷量 FROM "网络小说" AS t1 join "畅销榜" AS t2 ON t1.网络图书id = t2.网络小说id WHERE t2.num > 0
+SELECT t1.书名 FROM "出版图书" AS t1 join "网络小说" AS t2 ON t1.出版图书id = t2.网络图书id WHERE t2.书名 = '这本书叫什么名字？'
+SELECT评分 FROM "网络小说" WHERE 书名 = '唐七公子'
+SELECT 书名 FROM "网络小说" AS t1 join "网络小说" AS t2 ON t1.网络图书id = t2.网络图书id WHERE t2.评分 > t1.评分；
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+
+SELECT t1.经济损失 FROM "台风影响的国家" t1 JOIN "台风影响的中国省份" t2 ON t1.台风id = t2.台风id WHERE t2.省份 = '日本' AND t2.登陆强度 > 0
+SELECT t1.名称， t2.死亡人数， t3.经济损失 FROM "台风影响的国家" t1 JOIN "台风影响的中国省份" t2 ON t1.台风id = t2.台风id JOIN "台风" t3 ON t2.省份 = t3.省份 AND t2.登陆强度 = t3.登陆强度 WHERE t3.名称 = '莫兰蒂' AND t3.登陆时间 >= '2020-01-01' AND t3.登陆时间 <= '2020-02-18'
+SELECT t1.登陆地点 FROM "台风影响的国家" t1 JOIN "台风影响的中国省份" t2 ON t1.台风id = t2.台风id JOIN "台风" t3 ON t2.省份 = t3.省份 AND t2.登陆强度 = t3.登陆强度 WHERE t3.名称 = '莫兰蒂' AND t3.登陆时间 >= '2020-01-01' AND t3.登陆时间 <= '2020-02-18'
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT SUM(DISTINCT COUNT(DISTINCT运动队id)) AS 总共_奥运冠军_次数 FROM 奥运会成绩 WHERE 运动队id REFERENCES 篮球运动队 (id) GROUP BY 奥运会名称
+SELECT 运动队id, 奥运会名称， 比赛日期 FROM 奥运会成绩 WHERE 运动队id REFERENCES 篮球运动队 (id) AND 奥运会名称 IN ('2022年北京冬奥会', '2022年卡塔尔夏奥会', '2022年日本平成22奥运会') GROUP BY 运动队id, 奥运会名称
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT MAX(名次) as 最高名次 FROM 奥运会成绩 WHERE 运动队id REFERENCES 篮球运动队 (id)
+SELECT 年份 FROM 奥运会成绩 WHERE 运动队id REFERENCES 篮球运动队 (id)
+
+SELECT现任主教练 FROM 篮球运动队 WHERE 队名 = '西班牙男篮'
+SELECT 教练ID, COUNT(*) FROM 奥运会交手记录 WHERE 对手ID = '西班牙男篮' AND 赛事类型 = '奥运会'
+SELECT 主教练， MAX(名次) AS 最好名次 FROM 篮球运动队 WHERE 队名 = '西班牙男篮'
+
+SELECT * FROM 商家平台活动 WHERE 商家id = ( SELECT 商家id FROM 商家 WHERE 类型 = '商家' ORDER BY 月售单数 DESC LIMIT 1 ) AND 配送费 = 0
+SELECT平台id FROM 平台 WHERE市场占比 = ( SELECT市场占比 FROM 市场 WHERE 平台名 = 'Google外卖' ORDER BY 市场占比 DESC LIMIT 1 ) AND 平台名 = 'Google外卖'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "商家平台活动" WHERE 配送费 < 起送价格；
+
+SELECT * FROM "商家平台活动" WHERE "商家id" = ( SELECT "商家id" FROM "商家" WHERE "商家id" = 12345 ORDER BY "配送费" DESC LIMIT 1 )
+SELECT * FROM "商家平台活动" WHERE "平台id" = ( SELECT "平台id" FROM "平台" WHERE "平台id" = 12345 ORDER BY "优惠活动" DESC LIMIT 1 )
+SELECT "评分" FROM "商家平台活动" WHERE "商家id" = ( SELECT "商家id" FROM "商家" WHERE "商家id" = 12345 ORDER BY "评分" DESC LIMIT 1 )
+SELECT "平台id" FROM "平台" WHERE "平台id" IN ( SELECT "平台id" FROM "商家" WHERE "商家id" = 12345 ORDER BY "优惠活动" DESC LIMIT 1 )
+
+SELECT * FROM "商家平台活动" WHERE "商家id" = ( SELECT "商家id" FROM "商家" ORDER BY "评分" DESC LIMIT 1 )
+SELECT * FROM "商家平台活动" WHERE "商家id" = ( SELECT "商家id" FROM "商家" ORDER BY "评分" DESC LIMIT 2 )
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT 平台.平台名， 商家平台活动.优惠活动， 商家.商家text, 商家平台活动.配送费， 商家平台活动.评分， 月售单数 FROM 平台 INNER JOIN 商家平台活动 ON 平台.平台id = 商家平台活动.平台id INNER JOIN 商家 ON 商家.商家id = 商家平台活动.商家id WHERE 商家.商家text = '商家'
+SELECT 平台.平台名， 商家平台活动.优惠活动， 商家.商家text, 商家平台活动.配送费， 商家平台活动.评分， 月售单数 FROM 平台 INNER JOIN 商家平台活动 ON 平台.平台id = 商家平台活动.平台id INNER JOIN 商家 ON 商家.商家id = 商家平台活动.商家id WHERE 商家.商家text = '商家' GO
+
+SELECT app_name FROM "应用商店" WHERE "商店名" = '女朋友化妆品商店' AND "应用软件数" > 0 AND "累计下载次数" > 0
+SELECT app_name FROM "应用商店" WHERE "商店名" = '女朋友化妆品商店' AND "应用商店支持国家"."用户是否可以购买应用程序" = 'True' AND "应用商店支持国家"."开发人员是否可以出售应用程序" = 'True'
+SELECT app_name FROM "应用商店" ORDER BY MAX("累计下载次数") DESC
+SELECT好评数 FROM "软件下载" WHERE评价人数 = 1 AND "软件id" = (SELECT "软件id" FROM "应用商店" WHERE "商店名" = '女朋友化妆品商店')
+SELECT下载量 FROM "软件下载" WHERE评价人数 = 1 AND "软件id" = (SELECT "软件id" FROM "应用商店" WHERE "商店名" = '女朋友化妆品商店')
+
+SQL NOT GET: may be TIMEOUT
+SELECT 该国 FROM "应用商店支持国家" WHERE 该国 = '中国'
+SELECT IFNULL(应用商店支持国家.用户可以购买应用程序， 0) AS 允许出售， IFNULL(应用商店支持国家.开发人员是否可以出售应用程序， 0) AS 允许出售， 软件下载.下载量， 软件下载.评价人数， 软件下载.好评数 FROM "应用商店" JOIN "应用商店支持国家" ON "应用商店"."商店id" = "应用商店支持国家"."商店id" JOIN "软件" ON "应用商店"."软件id" = "软件"."软件id" JOIN "软件下载" ON "应用商店"."软件id" = "软件下载"."软件id" WHERE "应用商店"."商店name" = '应用商店' AND "应用商店支持国家"."国家" = '中国' GROUP BY "应用商店"."商店id"
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "软件下载" WHERE "软件id" IN ( SELECT "软件id" FROM "应用商店" WHERE "商店名" = 'My Store' ORDER BY "下载量" DESC LIMIT 1 )
+SELECT * FROM "软件" WHERE "用途" = '游戏'
+SELECT * FROM "软件" ORDER BY "好评数" DESC LIMIT 1
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+
+SELECT MAX(生产总值增长率) AS max_production_增长率 FROM 城市 WHERE 经济普遍低迷；
+SELECT 城市id AS city_id FROM 城市 WHERE 经济普遍低迷；
+SELECT 产业类型 FROM 城市第一产业 WHERE 城市id = ( SELECT 城市id FROM 城市 WHERE 经济普遍低迷； ) AS lower_bound
+SELECT 生产总值增长率 FROM 城市 WHERE 经济普遍低迷；
+
+SELECT 金融业增加值， 增长率 FROM 城市金融产业 WHERE 城市id = ( SELECT 城市id FROM 城市 WHERE 名称 = '长沙' )
+SELECT COUNT(*) FROM 金融机构 WHERE 城市id = ( SELECT 城市id FROM 城市 WHERE 名称 = '长沙' )
+SELECT 贷款余额， 增长率 FROM 城市金融产业 WHERE 城市id = ( SELECT 城市id FROM 城市 WHERE 名称 = '长沙' ); SELECT SUM(贷款余额) as 贷款余额， COUNT(DISTINCT 贷款余额) as 总数， (SUM(贷款余额) / COUNT(DISTINCT 贷款余额)) as 同比增长率 FROM 城市金融产业 WHERE 城市id = ( SELECT 城市id FROM 城市 WHERE 名称 = '长沙' )
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT s.name, s.所属省份， s.地区生产总值， s.生产总值增长率， s.第一产业总值， s.第二产业总值， s.第三产业总值 FROM 城市 s INNER JOIN 城市第一产业 s1 ON s.城市id = s1.城市id INNER JOIN 城市贸易产业 s2 ON s1.产业类型 = s2.行业 AND s.城市id = s2.城市id INNER JOIN (SELECT cityid, MAX(收入) AS max_收入 FROM 城市贸易产业 GROUP BY cityid ) s3 ON s2.城市id = s3.cityid AND s2.收入 = s3.max_收入 WHERE s3.cityid = (SELECT cityid FROM 城市贸易产业 GROUP BY cityid ORDER BY出口额 DESC LIMIT 1)
+SELECT 行业， 地区生产总值， 生产总值增长率， 贡献率 FROM 城市贸易产业 GROUP BY 行业， 地区生产总值， 生产总值增长率， 贡献率 ORDER BY 贡献率 DESC LIMIT 10
+
+SELECT t1.产业类型 FROM 城市 t1 JOIN 城市第一产业 t2 ON t1.城市id = t2.城市id JOIN 城市贸易产业 t3 ON t1.城市id = t3.城市id JOIN 城市金融产业 t4 ON t1.城市id = t4.城市id WHERE t2.产业类型 = '第一产业' AND t3.行业 = '工业' AND t4.金融业增加值 = 'X'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM 比赛 WHERE 奖金 > (SELECT 奖金 FROM 参赛队伍 WHERE 队伍id = 12345)
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM 比赛 WHERE 比赛名称 = (SELECT 比赛名称 FROM 比赛 WHERE 比赛id = 12345)
+
+SELECT * FROM 比赛 WHERE 名称 = 'xxx' AND 方向 = 'xxx'
+SELECT * FROM 比赛 WHERE 奖金数 = 'xxx' AND 单位性质 = 'xxx'
+SELECT (SELECT 队名 FROM 参赛队伍 WHERE 加入队伍id = 'xxx' AND 比赛id = 'xxx') AS 获奖队伍， (SELECT 奖金数 FROM 比赛 WHERE 比赛id = 'xxx') AS 奖项 FROM 比赛
+
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT 举办单位 AS 举办单位_name, 单位性质 AS 单位_性质， 奖金数 AS 奖金_amount, 录取队伍数量 AS录取_team_count, 比赛平台 AS game_平台 FROM 比赛 WHERE 名称 = 'XXX' AND 方向 = 'YYY' AND 举办单位 = 'ZZZ'
+SELECT DISTINCT type_name, feature_name, score FROM Recognition_model WHERE type_name = '图像' AND feature_name IN ('class', 'label', 'label_list') AND score > 0.5
+SELECT DISTINCT team_id FROM 参赛队伍 WHERE 加入队伍日期 >= DATE '2022-01-01' AND 加入队伍日期 < DATE '2022-02-01'
+
+SELECT t1.队名 FROM 参赛队伍 t1 INNER JOIN 学生参赛记录 t2 ON t1.队名 = t2.队伍id INNER JOIN 比赛 t3 ON t1.参加比赛id = t3.比赛id WHERE t3.比赛id = ( SELECT比赛id FROM 比赛 t4 WHERE t4.名称 = '2018年国内高校篮球联赛' )
+SELECT * FROM 学生参赛记录 WHERE 加入队伍id = ( SELECT加入队伍id FROM 队伍参赛成绩 WHERE 参加比赛id = ( SELECT 参加比赛id FROM 比赛 WHERE 名称 = '2018年国内高校篮球联赛' ) )
+SELECT t4.名称 FROM 比赛 t4 INNER JOIN 比赛记录 t5 ON t4.比赛id = t5.比赛id WHERE t5.比赛id = ( SELECT比赛id FROM 比赛 WHERE 名称 = '2018年国内高校篮球联赛' )
+SELECT t1.单位性质 FROM 比赛 t1 INNER JOIN 比赛记录 t2 ON t1.比赛id = t2.比赛id WHERE t2.单位性质 = ( SELECT 单位性质 FROM 比赛 WHERE 举办单位 = '中国教育在线' )
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM 比赛 WHERE 名称 = '模式识别' ORDER BY 奖金数 DESC LIMIT 1
+SELECT 举办单位， 比赛平台 FROM 比赛 WHERE 名称 = 'XXX' AND 比赛平台 = 'XXXX'
+SELECT * FROM 参赛队伍 WHERE 队伍id NOT IN ( SELECT 队伍id FROM 参赛学生 WHERE 学生id NOT IN ( SELECT 学生id FROM 参赛学生 WHERE 加入队伍日期 <= DATEADD(day, -1, MONTH) ) )
+SELECT * FROM 参赛队伍 WHERE 队伍id NOT IN ( SELECT 队伍id FROM 参赛学生 WHERE 学生id NOT IN ( SELECT 学生id FROM 参赛学生 WHERE 加入队伍日期 <= DATEADD(day, -1, MONTH) ) )
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM 餐饮公司 WHERE 上市股市 = '香港股市'
+SELECT COUNT(*) FROM 餐饮公司城市连锁 WHERE 城市id IN (SELECT 城市id FROM 城市 WHERE 所属省份 = '省份名')
+SELECT员工数量 FROM 餐饮公司城市连锁 WHERE 城市id IN (SELECT 城市id FROM 城市 WHERE 所属省份 = '省份名')
+SELECT总消费额，人均消费额 FROM 餐饮公司城市消费 WHERE 城市id IN (SELECT 城市id FROM 城市 WHERE 所属省份 = '省份名')
+
+SELECT t2.name, t2.所属省份， t2.餐饮收入， COUNT(*) AS 总消费额， COUNT(1) AS 人均消费额 FROM "餐饮公司城市消费" t1 JOIN "城市" t2 ON t1.城市id = t2.城市id JOIN "餐饮公司" t3 ON t1.公司id = t3.公司id GROUP BY t2.name, t2.所属省份， t2.餐饮收入 ORDER BY COUNT(*) DESC LIMIT 1
+SELECT * FROM "餐饮公司城市消费" t1 JOIN "城市" t2 ON t1.城市id = t2.城市id JOIN "餐饮公司" t3 ON t1.公司id = t3.公司id WHERE t2.name = '成都' AND t3.name = '餐饮公司'
+SELECT t3.经营年数 FROM "餐饮公司城市连锁" t2 JOIN "城市" t1 ON t2.城市id = t1.城市id JOIN "餐饮公司" t3 ON t1.公司id = t3.公司id WHERE t1.名称 = '成都火锅' AND t3.总部城市id = '城市'
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT t1.公司名称， t1.总部城市id FROM "餐饮公司" t1 INNER JOIN "城市" t2 ON t1.公司id = t2.公司id AND t2.名称 = '北京'
+SELECT t1.公司名称， t1.经营范围 FROM "餐饮公司" t1 INNER JOIN "餐饮公司城市消费" t2 ON t1.公司id = t2.公司id AND t2.总消费额 >= t2.人均消费额；
+SELECT COUNT(DISTINCT t1.城市id) AS分店数量 FROM "餐饮公司城市连锁" t1 INNER JOIN "城市" t2 ON t1.城市id = t2.城市id AND t2.名称 = '它'
+SELECT SUM(t3.人均消费额) AS平均消费水平 FROM "餐饮公司城市消费" t1 INNER JOIN "餐饮公司城市连锁" t2 ON t1.城市id = t2.城市id AND t2.分店数量 = (SELECT COUNT(DISTINCT t3.分店数量) FROM "餐饮公司城市连锁" t3 WHERE t3.城市id = t2.城市id)
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 商家id FROM 商家 WHERE 商家id NOT IN ( SELECT 商家id FROM "商家平台活动" WHERE配送费 = 0 )
+SELECT评分 FROM "商家平台活动" WHERE 商家id = ( SELECT 商家id FROM 商家 WHERE 商家text = '这家店铺' )
+SELECT平台name FROM 平台 WHERE 平台id = ( SELECT 平台id FROM 商家 WHERE 商家id = '那家店铺' )
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "食物表" WHERE 商家id = ( SELECT 商家id FROM "商家表" WHERE 类型 = '食物' )
+
+SELECT * FROM 奥运会成绩 WHERE 运动队id = (SELECT id FROM 篮球运动队 WHERE 队名 = '美国男篮国家队')
+SELECT 主教练 FROM 奥运会成绩 WHERE 运动队id = (SELECT id FROM 篮球运动队 WHERE 队名 = '美国男篮国家队')
+SELECT现任主教练 FROM 篮球运动队 WHERE 队名 = '美国男篮国家队'
+SELECT * FROM 奥运会交手记录 WHERE 赛事类型 = '奥运会' AND 对手id = 15
+SQL NOT GET: may be TIMEOUT
+
+SELECT 的对手id, 赛事类型， 年份， 奥运会， 比赛日期， 运动队id, 是否胜利 FROM 奥运会交手记录， 奥运会成绩， 篮球运动队 WHERE 运动队id IN ( SELECT id FROM 篮球运动队 WHERE 队名 = '伦敦奥运会' AND 所属国家 = '英国' AND 成立时间 >= '2012-08-01' AND 现任主教练 = '主教练' ) AND 成绩.年份 = 奥运会成绩.年份 AND 成绩.名次 = 奥运会成绩.名次 AND 成绩.运动队id = 运动队id AND 是否胜利 = 1 AND 比赛类型 = '半决赛'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 队名， 所属国家， 成立时间 FROM 篮球运动队 ORDER BY 成立时间 DESC LIMIT 1
+SELECT 所属国家， 实力 FROM 奥运会交手记录 WHERE 对手id = 1
+SELECT现任主教练 FROM 篮球运动队 WHERE id = ( SELECT id FROM 奥运会成绩 WHERE 年份 = 2022 ORDER BY 名次 DESC LIMIT 1 )
+SELECT * FROM 奥运会交手记录 WHERE 球队id = ( SELECT 球队id FROM 篮球运动队 WHERE 成立时间 = '2022-01-01' AND现任主教练 = '篮球队主教练' )
+
+SELECT * FROM 智能音箱产品 WHERE 所属公司id = ( SELECT 所属公司id FROM 公司 WHERE 名称 = '亚马逊' )
+SELECT * FROM 产品销售 WHERE 产品名称 = ( SELECT 产品名称 FROM 音箱产品 WHERE 所属公司id = ( SELECT 所属公司id FROM 公司 WHERE 名称 = '中国电子' ) )
+SELECT 产品名称， 产品名称 AS排名 FROM 产品销售 WHERE 产品名称 = '音箱产品' GROUP BY 产品名称 ORDER BY 排名 DESC LIMIT 1
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT COUNT(DISTINCT t1.id) FROM "音箱产品" t1 WHERE t1.name = 'XX' AND t1.所属公司id = (SELECT id FROM "公司" WHERE name = 'YY') AND t1.售价 >= ?
+SELECT COUNT(DISTINCT t1.id) AS total_sales, t1.name AS product_name, t1.上升名次 AS increase_排名， AVG(t1.售价) AS average_price FROM "音箱产品" t1 JOIN "产品销售" t2 ON t1.所属公司id = t2.产品id GROUP BY t1.name, t1.上升名次；
+SELECT t1.公司名称， t2.公司名称 FROM "公司" t1 JOIN "公司" t2 ON t1.公司id = t2.公司id WHERE t2.公司名称 = 'XX' AND t1.产品名称 = 'YY'
+
+SELECT * FROM "商家平台活动" WHERE "商家id" IN (SELECT "商家id" FROM "商家") AND "平台id" IN (SELECT "平台id" FROM "平台")
+SELECT * FROM "商家平台活动" ORDER BY "评分" DESC, "商家id" DESC LIMIT 10
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT t1.赛季， t1.球队id, t2.总教练 FROM "NBA总冠军" t1 JOIN "MVP记录" t2 ON t1.赛季 = t2.赛季 AND t1.球队id = t2.球队id WHERE t2.球员id = '3' AND t1.球队id = 'NBA球队'
+SELECT t1.总冠军次数 FROM "NBA总冠军" t1 JOIN "MVP记录" t2 ON t1.赛季 = t2.赛季 AND t1.球队id = t2.球队id WHERE t2.球员id = '3' AND t1.球队id = 'NBA球队'
+SELECT t1.主教练 FROM "NBA总冠军" t1 JOIN "MVP记录" t2 ON t1.球队id = t2.球队id WHERE t2.球员id = '3' AND t1.球队id = 'NBA球队'
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM 外卖软件 WHERE 软件名称 = '吉野家'
+SELECT 评分， COUNT(*) FROM 商家平台活动 WHERE 商家id = '商家1' GROUP BY 评分， COUNT(*)
+SELECT配送费 FROM 商家平台活动 WHERE 商家id = '商家1' GROUP BY 配送费
+
+SELECT * FROM "商家平台活动" WHERE "商家id" IN ( SELECT "商家id" FROM "商家" GROUP BY "商家" HAVING MAX("配送费") < 20 )
+SELECT COUNT(*) FROM "商家" WHERE "商家id" IN ( SELECT "商家id" FROM "商家平台活动" GROUP BY "商家平台活动"."平台id" HAVING COUNT(*) > 0 )
+SELECT * FROM "商家平台活动" ORDER BY "评分" DESC LIMIT 10
+SELECT "配送费" AS total_配送费， "起送价格" AS min_价， "评分" AS max_score FROM "商家平台活动" GROUP BY "平台id" HAVING MAX("评分") = ( SELECT MAX("评分") FROM "商家平台活动" WHERE "商家id" = ( SELECT "商家id" FROM "商家" WHERE "商家type" = "快餐店" ) )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT t1.name AS 台风名称， t2.经济损失 AS 经济损失， COUNT(DISTINCT t1.死亡人数) AS 死亡人数， SUM(t1.死亡人数) / COUNT(DISTINCT t1.死亡人数) AS 死亡人数比例， SUM(t1.经济损失) / COUNT(DISTINCT t1.死亡人数) AS 经济损失比例， (SELECT COUNT(DISTINCT t1.死亡人数) FROM台风 t1 WHERE t1.name = 'XX' AND t1.经济损失 > 1000) AS 最高经济损失 FROM 台风影响的中国省份 t1 INNER JOIN 台风影响的国家 t2 ON t1.台风id = t2.台风id WHERE t2.经济损失 > 0 GROUP BY t1.name, t2.经济损失 HAVING COUNT(DISTINCT t1.死亡人数) > 1 ORDER BY 死亡人数比例 DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT COUNT(DISTINCT '广东省') AS次数 FROM "台风影响的中国省份" WHERE "台风id" = '广东省'
+SELECT SUM(CASE WHEN "死亡人数" > 0 THEN "死亡人数" ELSE 0 END) AS人员伤亡， SUM(CASE WHEN "失踪人数" > 0 THEN "失踪人数" ELSE 0 END) AS失踪 FROM "台风影响的国家" WHERE "台风id" = '台风'
+SELECT COUNT(DISTINCT '台风') AS次数， '台风' AS台风 FROM "台风影响的中国省份" WHERE "台风id" = '台风' GROUP BY '台风' ORDER BY COUNT(DISTINCT '台风') DESC LIMIT 1
+SELECT SUM(CASE WHEN '玛琪' LIKE '%造成%' THEN 1 ELSE 0 END) AS经济损失 FROM "影响国家" WHERE "台风id" = '玛琪'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT COUNT(DISTINCTDISTINCT 音箱产品.音箱id) AS total_智能音箱数量 FROM 音箱产品 INNER JOIN 产品销售 ON 音箱产品.音箱id = 产品销售.音箱id INNER JOIN 公司 ON 产品销售.产品id = 公司.id WHERE 公司.名称 = '百度'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM 电视机平台售卖 WHERE 型号 = 'ALED108V' AND 城市 = '杭州'
+SELECT * FROM 电视机型号 WHERE 型号 = 'ALED108V' AND 产品定位 = '高清'
+SELECT 定价 FROM 电视机平台售卖 WHERE 型号 = 'ALED108V' AND 城市 = '杭州' AND 售卖量 > 0
+
+SELECT * FROM 电视机平台售卖 WHERE 型号 = 'XXXXX' ORDER BY 售价 DESC LIMIT 1
+SELECT SUM(售价) FROM 电视机平台售卖 WHERE 型号 = 'XXXXX' GROUP BY 型号 ORDER BY SUM(售价) DESC LIMIT 1
+SELECT 型号， 配置 FROM 电视机平台售卖 WHERE 型号 = 'XXXXX' GROUP BY 型号 HAVING SUM(配置) > 0
+
+SELECT * FROM 电视机平台售卖 INNER JOIN 电视机型号 ON 型号id = 电视机平台售卖.型号id INNER JOIN 电视机品牌 ON 品牌id = 电视机型号.品牌id WHERE 平台 = 'Android' AND 型号id IN ( SELECT 型号id FROM 电视机品牌 WHERE 品牌id = 'Microsoft' AND 国家 = 'China' AND 市场份额 = 1 )
+SELECT * FROM 电视机平台售卖 INNER JOIN 电视机型号 ON 型号id = 电视机平台售卖.型号id INNER JOIN 电视机品牌 ON 品牌id = 电视机型号.品牌id WHERE 平台 = 'Android' AND 型号id IN ( SELECT 型号id FROM 电视机品牌 WHERE 品牌id = 'Microsoft' AND 国家 = 'China' AND 市场份额 = 1 )
+SQL NOT GET: may be TIMEOUT
+SELECT 品牌名 FROM 电视机品牌 WHERE 国家 = 'China'
+
+SELECT 型号 FROM 电视机平台售卖 WHERE 平台 = '拼多多' AND 售卖量 >= 10000 AND 用户评分 = 4.9
+SELECT 定价 FROM 电视机平台售卖 WHERE 平台 = '拼多多' AND 售卖量 >= 10000 AND 用户评分 = 4.9
+SELECT 型号， 定价 FROM 电视机平台售卖 WHERE 平台 = '拼多多' AND 售卖量 >= 10000 AND 用户评分 = 4.9 AND 定价 NOT IN (SELECT 定价 FROM 历史价格表 WHERE 时间 < 现在())
+
+SELECT * FROM 电视机平台售卖 INNER JOIN 电视机型号 ON 电视机平台售卖.型号id = 电视机型号.型号id WHERE 电视机平台售卖.平台 = 'Xbox One' AND 电视机型号.产品定位 = 'Xbox Series X/S'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT t1.定价 FROM 电视机平台售卖 t1 INNER JOIN 电视机型号 t2 ON t1.型号id = t2.型号id INNER JOIN 电视机品牌 t3 ON t1.平台 = t3.平台 AND t2.品牌id = t3.品牌id WHERE t3.市场份额 = ( SELECT MAX(市场份额) FROM 电视机品牌 WHERE 品牌名 = 'Apple' )
+
+SELECT * FROM 电视机品牌 WHERE 品牌id IN ( SELECT 品牌id FROM 各城市电视机销量 WHERE 城市 = '北京' AND 省份 = '中国' AND 电视机售卖量 > 0 )
+SELECT * FROM 电视机平台售卖 WHERE 型号id IN ( SELECT 型号id FROM 电视机型号 WHERE 型号 = 'X29H' AND 产品定位 = '高清电视' AND 屏幕尺寸 = 29英寸 )
+SELECT 平台 FROM 在线平台售卖 WHERE 平台 IN ( SELECT 平台 FROM 商品平台售卖 WHERE 商品平台 = '淘宝' AND 售卖量 > 0 )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM 电视机型号；
+SELECT 品牌名， 公司， 国家， 市场份额 FROM 电视机品牌；
+SELECT 品牌名 FROM 电视机品牌；
+SELECT AVG(定价) FROM 电视机平台售卖；
+
+SELECT * FROM "应用商店" WHERE "商店名" = '滴滴打车' AND "应用商店支持国家"."商店名" = '滴滴打车' AND "应用商店支持国家"."应用商店id" = 'App Store'
+SELECT * FROM "应用商店" WHERE "商店名" = 'App Store' AND "应用商店支持国家"."商店名" = 'App Store' AND "应用商店支持国家"."国家" = '阿根廷'
+SELECT * FROM "应用商店" WHERE "商店名" = 'App Store' AND "应用商店支持国家"."商店名" = 'App Store' AND "应用商店支持国家"."国家" = '中国'
+
+SELECT 商店名， 累计下载次数 FROM "应用商店" GROUP BY 商店名 ORDER BY 累计下载次数 DESC LIMIT 1
+SELECT COUNT(*), SUM(累计下载次数) FROM "应用商店支持国家" WHERE 国家 = '中国' GROUP BY 应用商店名 ORDER BY COUNT(*) DESC, SUM(累计下载次数) DESC LIMIT 1
+SELECT 软件名 FROM "软件" WHERE 软件名 IN ( SELECT 软件名 FROM "应用商店" WHERE 商店名 = 'App Store' ORDER BY 下载量 DESC LIMIT 1 ) ORDER BY 下载量 DESC LIMIT 1
+SELECT 软件名， 下载量 FROM "软件" WHERE 软件名 IN ( SELECT 软件名 FROM "应用商店" WHERE 商店名 = 'App Store' GROUP BY 软件名 ORDER BY 下载量 DESC LIMIT 1 ) ORDER BY 下载量 DESC LIMIT 1
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT软件.名称， 软件下载.下载量， COUNT(*) as 下载量总数， SUM(评价人数) as 总评价人数， SUM(好评数) as 总好评人数 FROM "软件" AS 软件 JOIN "软件下载" AS 下载 ON 软件.软件id = 下载.软件id JOIN "应用商店" AS 应用商店 ON 下载.应用商店id = 应用商店.商店id GROUP BY 软件.名称， 软件下载.应用商店id ORDER BY 下载量总数 DESC, 总评价人数 DESC, 总好评人数 DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '应用商店' AND COLUMN_NAME = '应用商店支持国家'
+
+SELECT 商店名， 商店支持国家 FROM "应用商店" GROUP BY 商店名， 商店支持国家 HAVING COUNT(DISTINCT 商店名) > 1
+SELECT 商店名， 商店支持国家， COUNT(*) as 软件下载量 FROM "应用商店" WHERE 商店支持国家 = '中国' GROUP BY 商店名， 商店支持国家 HAVING COUNT(*) > 0
+SELECT 商店名， COUNT(*) as 软件数量 FROM "应用商店" GROUP BY 商店名 ORDER BY COUNT(*) DESC LIMIT 1
+SELECT 商店名， SUM(用户数量) as 用户量， COUNT(*) as 下载次数 FROM "应用商店" GROUP BY 商店名 HAVING 下载次数 > 10
+
+SELECT t1.年份， t1.总里程， t1.开通城市数量， t2.中国地铁总里程， t2.中国地铁开通城市数量 FROM 中国地铁 t1 INNER JOIN 城市 t2 ON t1.城市id = t2.城市id WHERE t2.城市名称 = '北京' AND t1.年份 >= '2014' AND t1.年份 <= '2024'
+SELECT 省份， 城市 FROM 地铁线路表 WHERE 地铁线路表.线路名称 = '地铁'
+SELECT 地铁运营里程， 地铁线路名称， 地铁发达程度 FROM 地铁线路表 WHERE 地铁线路表.线路名称 = '地铁' AND 地铁线路表.线路发达程度 = ( SELECT 发达程度 FROM 城市地铁票价表 WHERE 城市地铁票价表.城市id = 地铁线路表.城市id )
+SELECT 城市， COUNT(*) as 线路数 FROM 城市地铁里程表 GROUP BY 城市 ORDER BY 线路数 DESC LIMIT 1
+
+CREATE TABLE 中国地铁 ( 年份 time , 总里程 number , 开通城市数量 number ) CREATE TABLE 城市 ( 城市id text PRIMARY KEY , 城市名称 text , 所属省份 text ) CREATE TABLE 城市地铁票价 ( 城市id number PRIMARY KEY , 列_2元可乘坐里程 number , 列_3元可乘坐里程 number , 列_4元可乘坐里程 number , 列_5元可乘坐里程 number , FOREIGN KEY (城市id) REFERENCES 城市 (城市id) ) CREATE TABLE 城市地铁里程 ( 城市id number PRIMARY KEY , 地铁运营里程 number , 在建里程 number , 规划里程 number , 已运营线路数 number , FOREIGN KEY (城市id) REFERENCES 城市 (城市id) ) CREATE TABLE 城市地铁日均客运量 ( 城市id number PRIMARY KEY , 日均客运量 number , 每日每公里客运量 number , 每公里运营成本 number , 每公里运营收入 number , FOREIGN KEY (城市id) REFERENCES 城市 (城市id) )
+SELECT sum(case when 在建里程 > 0 then 1 else 0 end) as 在建里程， sum(case when 规划里程 > 0 then 1 else 0 end) as 规划里程， sum(case when 已运营线路数 > 0 then 1 else 0 end) as 已运营里程， sum(case when 总里程 > 0 then 1 else 0 end) as 总计里程 FROM 城市地铁里程 GROUP BY 城市id
+SELECT 日均客运量， 每日每公里客运量， 每公里运营成本， 每公里运营收入 FROM 城市地铁日均客运量 WHERE 每日每公里客运量 > 0 AND 上下班高峰时间存在 GROUP BY 日均客运量， 每日每公里客运量 HAVING COUNT(上下班高峰时间) > 0
+
+SELECT 城市id, MAX(每公里运营成本) AS 运营成本， MAX(每公里运营收入) AS 收入 FROM 城市地铁日均客运量 GROUP BY 城市id HAVING 运营成本 > 收入；
+SELECT 城市id, MAX(每公里运营成本) AS 运营成本， MAX(每公里运营收入) AS 收入 FROM 城市地铁日均客运量 GROUP BY 城市id HAVING 运营成本 > 收入；
+SELECT 客运量， SUM(运营成本) AS 运营成本， SUM(运营收入) AS 运营收入 FROM 城市地铁日均客运量 GROUP BY 客运量 HAVING 客运量 > 1000
+
+SELECT 城市.城市名称 FROM 城市 JOIN 城市地铁票价 ON 城市.城市id = 城市地铁票价.城市id JOIN 城市地铁里程 ON 城市.城市id = 城市地铁里程.城市id WHERE 城市地铁票价.列_2元可乘坐里程 = ( SELECT MAX(列_2元可乘坐里程) FROM 城市地铁票价 ) AND 城市地铁里程.地铁运营里程 = ( SELECT MAX(地铁运营里程) FROM 城市地铁里程 ) AND 城市.城市名称 = '北京'
+SELECT COUNT(*) FROM 城市地铁票价 JOIN 城市地铁里程 ON 城市.城市id = 城市地铁里程.城市id WHERE 城市.城市名称 = '上海' AND 城市地铁票价.列_2元可乘坐里程 >= 2
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM 羽毛球赛事 WHERE 赛事名称 = '奥运会' AND 赛事名称 = '世界羽毛球锦标赛' AND 成立时间 >= '2021-01-01' AND 成立时间 <= '2022-12-31' AND 比赛间隔年 = 0 AND 人群 = '全部人群'
+SELECT 时间 FROM 羽毛球球员 WHERE 球员id = '123456' AND 性别 = '男' AND 国籍 = '中国'
+SELECT 赛事间隔年 FROM 羽毛球赛事 WHERE 赛事名称 = '奥运会' AND 赛事名称 = '世界羽毛球锦标赛' AND 成立时间 >= '2021-01-01' AND 成立时间 <= '2022-12-31' AND 比赛间隔年 = 0 AND 人群 = '全部人群'
+SELECT 赛事名称， 冠军数量 FROM 羽毛球冠军次数 WHERE 冠军国家 = '中国' AND 赛事名称 = '2022年羽毛球男团锦标赛' AND 冠军数量 > 1 AND 赛事间隔年 = 0 AND 人群 = '全部人群'
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+
+SELECT * FROM "羽毛球球员" ORDER BY "球员年龄" DESC
+SELECT "球员姓名" AS 球员国籍， "球员id" AS 球员id, "出生日期" AS 球员出生日期， "身高" AS 球员身高， "国家名称" AS 国家名称， "冠军数量" AS 冠军数量， COUNT(*) AS 冠军次数 FROM "重要赛事" WHERE "赛事名称" = "奥运会冠亚军" GROUP BY "球员姓名", "球员id" HAVING COUNT(*) > 0
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "羽毛球球员"
+SELECT * FROM "重要赛事" WHERE 赛事名称 = '奥运会冠亚军'; SELECT * FROM "冠军国家" WHERE 国家名称 = '中国'; SELECT * FROM "球员夺冠次数" WHERE 球员id = '某个球员'
+
+SELECT * FROM "医院" WHERE "医院等级" = '三级甲等'
+SELECT COUNT(*) as "科室数量", SUM(CASE WHEN "重点专科数量" > 0 THEN 1 END) as "重点专科数量" FROM "医院" GROUP BY "医院名"
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "特色科室" WHERE "医院id" IN ( SELECT "医院id" FROM "医院" WHERE "医院等级" = '三级甲等' GROUP BY "医院名" )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM医院 WHERE 所属城市id = 1
+SELECT医院等级 FROM医院 WHERE 所属城市id = 1
+SELECT科室 FROM特色科室 WHERE医院id = 1
+SELECT 科室 FROM特色科室 WHERE 医院id = 1 AND 是否重点 = 1
+
+SELECT 城市.名称， COUNT(*) as 人口数量 FROM 城市 LEFT JOIN 医院 ON 城市.名称 = 医院.城市名 LEFT JOIN 医院排名 ON 城市.名称 = 医院排名.城市名 AND 医院排名.医院id = 医院.医院id GROUP BY 城市.名称， 医院.医院名， 医院排名.医院id ORDER BY COUNT(*) DESC
+SELECT 城市.名称， SUM(case when 城市.老年人口占比 = 100 then 1 else 0 end) as 老龄化严重程度 FROM 城市 GROUP BY 城市.名称 HAVING COUNT(*) = (SELECT COUNT(*) FROM 特色科室 WHERE 医院.城市名 = 城市.名称)
+SELECT 医院.医院名 FROM 医院 JOIN 城市 ON 医院.城市名 = 城市.名称 JOIN 医院排名 ON 医院.医院名 = 医院排名.医院名 WHERE 医院.医院等级 = "二甲" GROUP BY 医院.医院名 HAVING COUNT(*) = (SELECT COUNT(*) FROM 特色科室 WHERE 医院.医院名 = 医院.医院名)
+SELECT 天数， SUM(接待病患数量) as 接待量 FROM ( SELECT 天数， COUNT(*) as 接待量 FROM 医院排名 WHERE 医院.年份 = 2022 GROUP BY 天数 ) 天数表 WHERE 天数 > 0 GROUP BY 天数 ORDER BY 接待量 DESC
+
+SELECT city.城市名称， city.所属省份， sum(case when 票价 = '列_2元可乘坐里程' then 客运量 else 0 end) 地铁每日客运量， sum(case when 票价 = '列_3元可乘坐里程' then 客运量 else 0 end) 地铁列_3元可乘坐里程客运量， sum(case when 票价 = '列_4元可乘坐里程' then 客运量 else 0 end) 地铁列_4元可乘坐里程客运量， sum(case when 票价 = '列_5元可乘坐里程' then 客运量 else 0 end) 地铁列_5元可乘坐里程客运量， sum(case when city.城市名称 = '成都' then 客运量 else 0 end) daily_坐地铁人数 FROM city INNER JOIN 城市地铁票价 ON city.城市id = city地铁票价.城市id INNER JOIN 城市 ON city.城市id = city.城市名称 GROUP BY city.城市名称， city.所属省份， city.地铁每日客运量 HAVING 每天客运量 >= 1000
+SELECT city.城市名称， city.所属省份， sum(case when income > 0 then income else 0 end) income, sum(case when city.城市名称 = '成都' then income else 0 end) daily_坐地铁人数 FROM city INNER JOIN 城市地铁票价 ON city.城市id = city地铁票价.城市id INNER JOIN 城市 ON city.城市id = city.城市名称 GROUP BY city.城市名称， city.所属省份， city.地铁每日客运量 HAVING 每天客运量 >= 1000
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM "医院" WHERE "医院等级" = '三级甲等'
+SELECT * FROM "医院" ORDER BY "排名" DESC LIMIT 10
+SELECT * FROM "医院" WHERE "排名" < 20
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+CREATE TABLE "冠军国家" ( "国家名称" text, "赛事id" text, "冠军数量" number, FOREIGN KEY ("赛事id") REFERENCES "重要赛事" ("赛事id") ON DELETE NO ACTION ON UPDATE NO ACTION ); CREATE TABLE "球员夺冠次数" ( "球员id" text, "赛事id" text, "冠军次数" number, "亚军次数" number, "季军次数" number, FOREIGN KEY ("球员id") REFERENCES "羽毛球球员" ("球员id") ON DELETE NO ACTION ON UPDATE NO ACTION, FOREIGN KEY ("赛事id") REFERENCES "重要赛事" ("赛事id") ON DELETE NO ACTION ON UPDATE NO ACTION )
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM 动物 WHERE 是否是人类朋友 = 1
+SELECT 动物朋友.学名， 动物朋友.朋友id FROM 动物朋友 INNER JOIN 动物 ON 动物朋友.动物id = 动物.动物id INNER JOIN 动物 ON 动物.学名 = 动物朋友.学名 WHERE 动物.食性 = '动物' AND 动物.是否是人类朋友 = 0
+SELECT 天敌.学名， 天敌.朋友id FROM 动物的天敌 INNER JOIN 动物朋友 ON 动物的天敌.天敌id = 动物朋友.朋友id INNER JOIN 动物 ON 动物的天敌.动物id = 动物.动物id WHERE 动物的天敌.食性 = '动物' AND 动物的天敌.是否是人类朋友 = 0
+
+SELECT * FROM "奥运会冠亚军" WHERE "奥运会名称" = '2022年北京冬奥会' AND "项目名称" = '羽毛球'
+SELECT "运动员姓名" as 姓名， "国籍" as 国家， "性别" as 性别， "出生日期" as 出生日期， "身高" as 身高， "主要赛事" as 主要赛事 FROM "重要赛事" WHERE "成立时间" = '2022年' AND "比赛间隔年" = '1999-2004'
+SELECT "运动员姓名" as 姓名， "国籍" as 国家， "性别" as 性别， "出生日期" as 出生日期， "身高" as 身高， "主要赛事" as 主要赛事， "其他比赛" as 其他比赛 FROM "重要赛事" WHERE "成立时间" = '2022年' AND "比赛间隔年" = '1999-2004'
+SELECT * FROM "奥运会冠亚军" WHERE "奥运会名称" = '2022年北京冬奥会' AND "金牌获得者id" = 'xxx' AND "银牌获得者id" = 'xxx' AND "铜牌获得者id" = 'xxx'
+
+SELECT * FROM 动物 WHERE 学名 = '草食动物'
+SELECT COUNT(*) FROM 动物；
+SELECT * FROM 动物 WHERE 学名 = '草食动物' LIMIT 10
+SELECT * FROM 动物 WHERE 学名 = '草食动物' ORDER BY 天敌原因 DESC LIMIT 1
+
+SELECT COUNT(1) AS 城市数量 FROM 中国地铁 WHERE 年份 = 2019 AND 总里程 > 0
+SELECT sum(地铁运营里程) AS 总里程， 岁月(年份) AS 年份， time -岁月(年份) AS 年份时间， 0 AS 初始值 FROM 中国地铁 WHERE 年份 = 1999 AND 总里程 > 0 AND 年份 + 岁月(年份) = 1999 + 岁月(年份) GROUP BY 岁月(年份), time -岁月(年份)
+SELECT 地铁运营里程 FROM 中国地铁， (SELECT COUNT(*) AS 地铁运营里程 FROM 城市地铁里程 WHERE 城市 = '武汉') AS 武汉地铁 WHERE 地铁运营里程 > 0
+SELECT 每日每公里客运量 FROM 城市地铁日均客运量， (SELECT COUNT(*) AS 每日每公里客运量 FROM 城市地铁日均客运量 WHERE 地铁运营里程 > 0) AS 每日每公里客运量_地铁 WHERE 地铁运营里程 > 0
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT 城市地铁日均客运量 FROM 城市地铁里程 JOIN 城市 ON 城市.城市id = 城市地铁里程.城市id JOIN 城市地铁票价 ON 城市.城市id = 城市地铁票价.城市id WHERE 城市地铁里程.地铁运营里程 = ( SELECT MAX(地铁运营里程) FROM 城市地铁里程 GROUP BY 城市id )
+SELECT 列_2元可乘坐里程 FROM 城市地铁票价 WHERE 城市id = ( SELECT 城市id FROM 城市 WHERE 城市名称 = '这个城市' )
+SELECT 列_5元可乘坐里程 FROM 城市地铁票价 WHERE 城市id = ( SELECT 城市id FROM 城市 WHERE 城市名称 = '这个城市' )
+
+SELECT * FROM 民族 WHERE 民族id IN ( SELECT 词条id FROM 民俗节日 WHERE 时间 = ( SELECT 时间 FROM 民族 WHERE 民族id = ? ) )
+SELECT s.语言， s.宗教信仰 FROM "民族" s LEFT JOIN "民族城市" ss ON s.民族id = ss.民族id AND s.名称 = ss.名称 WHERE s.人口 = ( SELECT r.人口 FROM "民俗节日" r WHERE r.词条id = ? AND r.时间 = ? )
+SELECT s.节日 FROM "民族" s LEFT JOIN "民族城市" ss ON s.民族id = ss.民族id AND s.名称 = ss.名称 WHERE s.人口 = ( SELECT r.人口 FROM "民俗节日" r WHERE r.词条id = ? AND r.时间 = ? )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 日期 FROM 民俗节日 WHERE 节日='端午节'
+SELECT COUNT(*) FROM 民族 WHERE 名称='中国'
+SELECT 地理位置 FROM 民族城市 WHERE 民族id='中国'
+SELECT 民族id, COUNT(*) as人口比例 FROM 民族城市 WHERE 城市名称='内蒙古' AND 民族id>10%
+
+SELECT 球员id AS 名字 FROM 篮球运动员 GROUP BY 球员id ORDER BY 夺冠次数 DESC LIMIT 10
+SELECT * FROM 篮球运动员 WHERE 国籍 = '美国'
+SELECT 球员id FROM 篮球运动员 WHERE 参加选秀年 = '1996'
+SELECT 球员id, 球队名称 FROM 篮球运动员 WHERE 毕业院校 = '清华大学' AND 国籍 = '中国'
+SELECT SUM(DISTINCT MVP记录.次数) AS total_ MVP FROM 篮球运动员 JOIN MVP记录 ON 篮球运动员.球员id = MVP记录.球员id
+
+SELECT * FROM "民族" WHERE 民族id IN (SELECT 词条id FROM "民俗节日") AND 民族id NOT IN (SELECT 词条id FROM "民族城市")
+SQL NOT GET: may be TIMEOUT
+SELECT人口， COUNT(*) FROM "民族" GROUP BY人口 ORDER BY人口 DESC LIMIT 1
+
+SQL NOT GET: may be TIMEOUT
+SELECT COUNT(*) as 参加了， CASE WHEN '他' IN PRIMARY KEY('艺人') AND '期节目' IN PRIMARY KEY('综艺节目') THEN '作为' ELSE '其他' END AS 参加类型 FROM "节目阵容"
+SELECT COUNT(*) as 一共， SELECT * FROM "综艺节目" WHERE "平台id" = '平台' AND "期数" = PRIMARY KEY('综艺节目') ORDER BY "首播时间" DESC LIMIT 1 FROM "节目阵容"
+
+SELECT 的电视剧.电视剧编号， 的电视剧收视.时间段， 电视剧收视.收视率 FROM 电视剧 INNER JOIN 电视剧收视 ON 电视剧.电视剧编号 = 电视剧收视.电视剧编号 INNER JOIN 首播平台 ON 电视剧收视.平台id = 首播平台.电视台id WHERE 首播平台.名称 = 'YouTube'
+SELECT 的电视剧.电视剧编号， 的电视剧收视.时间段， 电视剧收视.收视率 FROM 电视剧 INNER JOIN 电视剧收视 ON 电视剧.电视剧编号 = 电视剧收视.电视剧编号 INNER JOIN 首播平台 ON 电视剧收视.平台id = 首播平台.电视台id WHERE 首播平台.名称 = 'YouTube' AND 电视剧.出品时间 = '2023-02-24'
+SELECT 收视率.收视率， 收视率.率 FROM 收视率 INNER JOIN 的电视剧收视 ON 电视剧收视.电视剧编号 = 电视剧收视.电视剧编号 INNER JOIN 首播平台 ON 电视剧收视.平台id = 首播平台.电视台id WHERE 首播平台.名称 = 'YouTube' AND 电视剧.出品时间 = '2023-02-24' AND 收视率.收视率 > 0.5
+
+SELECT * FROM 电视剧收视 WHERE 平台id = '爱奇艺'
+SELECT * FROM 电视剧 WHERE 首播平台id = '爱奇艺' AND 剧名 = '这部剧' AND 收视率 > 0.8
+SQL NOT GET: may be TIMEOUT
+SELECT 电视剧id, 时间段 FROM 电视剧收视 WHERE 平台id = '爱奇艺' AND 电视剧id IN ( SELECT 电视剧id FROM 电视剧 WHERE 首播平台id = '爱奇艺' AND 剧名 = '这部剧' AND 收视率 > 0.8 )
+
+SELECT * FROM 电视剧 WHERE 出品时间 >= '2021-01-01' AND 出品时间 <= '2021-03-01'
+SELECT 出品时间 FROM 电视剧 WHERE 出品时间 >= '2021-01-01' AND 出品时间 <= '2021-03-01'
+SELECT 首播平台id FROM 电视剧 WHERE 剧名 = '这部剧' FOREIGN KEY (首播平台id) REFERENCES 电视台 (电视台id)
+SELECT 时间段 FROM 电视剧收视 WHERE 电视剧id = '这部剧' ORDER BY 时间段 LIMIT 1
+SELECT 收视率 FROM 电视剧收视 WHERE 时间段 = '2022-02-24' ORDER BY 收视率 LIMIT 1
+
+SELECT * FROM 电视台 WHERE 电视台id IN ( SELECT 电视台id FROM 电视剧 WHERE 剧名 = '王者荣耀' )
+SELECT * FROM 电视台 WHERE 隶属机构 = '央视'
+SELECT 电视台.name, 电视剧.剧名， 电视剧收视.收视率， 电视台.隶属机构 FROM 电视台 LEFT JOIN 电视剧 ON 电视台.电视台id = 电视剧.首播平台id LEFT JOIN 电视剧收视 ON 电视剧收视.电视剧id = 电视剧.电视剧编号 WHERE 电视剧.剧名 = '王者荣耀' AND 电视剧收视.时间段 = '2022-01-01' AND 电视台.上线时间 >= '2022-01-01' AND 电视台.开播时间 <= '2022-01-01'
+SELECT 电视剧.剧名 FROM 电视剧 WHERE 电视剧.首播平台id IN ( SELECT 首播平台id FROM 电视台 )
+
+SELECT * FROM 综艺节目 WHERE 平台id = ( SELECT 平台id FROM 平台 WHERE 词条id = 12345 )
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM 综艺节目 WHERE 首播时间 = ( SELECT time FROM 平台 WHERE 词条id = 12345 )
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM "综艺节目" WHERE "期数" = ( SELECT "参加期数" FROM "节目阵容" WHERE "艺人id" = ( SELECT "id" FROM "艺人" WHERE "姓名" = "一个女人" ) )
+SELECT * FROM "嘉宾" WHERE "姓名" = '一个男人' AND "职业" = '一个演员'
+SELECT * FROM "综艺节目" WHERE "首播时间" = '2023-02-18 10:00' AND "平台id" = ( SELECT "平台id" FROM "平台" WHERE "平台名称" = '微博' )
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM "城市" ORDER BY "老年人口占比" DESC LIMIT 1
+SELECT COUNT(*) as "人数" FROM "城市" WHERE "人口数量" >= 1000
+SELECT * FROM "城市" WHERE "词条id" = '这个城市' AND "所属城市id" = '这个城市'
+SELECT MAX(size) as "规模", SUM(职工数量) as "职工人数", COUNT(*) as "科室数量" FROM "医院" WHERE "所属城市id" = '这个城市' AND "医院等级" = '甲'
+
+SELECT * FROM "医院" WHERE "医院"."科室"."是否重点" = 1
+SELECT * FROM "医院" WHERE "医院"."等级" = '三甲医院'
+SELECT * FROM "医院" WHERE "医院"."等级" > '三甲医院' AND "医院"."院士数量" > 0
+
+NO SQL FOUND
+NO SQL FOUND
+SELECT t1.城市id FROM "医院" t1 join "医院排名" t2 on t1.医院id = t2.医院id join "城市" t3 on t2.城市id = t3.城市id WHERE t3.名称 = "那家医院" order by t1.城市id asc limit 1
+
+SQL NOT GET: may be TIMEOUT
+SELECT t1.医院名， t1.医院等级， COUNT(*) FROM "医院" t1 LEFT JOIN "医院排名" t2 ON t1.医院名 = t2.医院名 AND t1.医院等级 = t2.医院等级 WHERE t2.年份 = ( SELECT COUNT(*) + 1 FROM "医院" t3 WHERE t3.医院名 = t1.医院名 AND t3.医院等级 = '三甲医院' ) GROUP BY t1.医院名， t1.医院等级 HAVING COUNT(*) > 1
+SELECT t1.科室， t2.是否重点 FROM "医院" t1 INNER JOIN "特色科室" t2 ON t1.科室 = t2.科室 WHERE t2.是否重点 = '是' GROUP BY t1.科室 HAVING COUNT(*) > 1
+
+SELECT * FROM "医院" WHERE "医院名" = '吉林大学白求恩第一医院' AND "医院等级" = '三级甲等'
+SELECT * FROM "医院" WHERE "医院名" = '吉林大学白求恩第一医院' AND "医院等级" = '三级甲等' AND ("医院排名" > 100 AND "接待病患数量" > 1000 AND "手术数量" > 1000)
+SELECT COUNT(*) FROM "手术" WHERE "手术日期" = '2023-02-18' AND "手术类型" = '普通手术'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT 城市.名称， COUNT(*) as 人口数量 FROM 城市 JOIN 医院 ON 城市.所属省份 = 医院.词条id JOIN 医院排名 ON 医院.医院id = 医院排名.医院id JOIN 城市 ON 医院排名.城市id = 城市.城市id GROUP BY 城市.名称 ORDER BY 人口数量 DESC LIMIT 1
+SELECT 城市.名称， (SELECT COUNT(*) FROM 城市 as t2 WHERE t2.名称 = 城市.名称 and t2.老年人口占比 > 城市.老年人口占比) as老年人口占比 FROM 城市 JOIN 医院 ON 城市.所属省份 = 医院.词条id JOIN 医院排名 ON 医院.医院id = 医院排名.医院id JOIN 城市 ON 医院排名.城市id = 城市.城市id GROUP BY 城市.名称 ORDER BY 老年人口占比 DESC LIMIT 1
+SELECT 城市.名称， (SELECT COUNT(*) FROM 城市 as t2 WHERE t2.名称 = 城市.名称 and t2.老年人口占比 > 城市.老年人口占比) as老年人口数量 FROM 城市 JOIN 医院 ON 城市.所属省份 = 医院.词条id JOIN 医院排名 ON 医院.医院id = 医院排名.医院id JOIN 城市 ON 医院排名.城市id = 城市.城市id GROUP BY 城市.名称 ORDER BY 老年人口数量 DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT COUNT(*) as num FROM "医院" as t1 join "城市" as t2 on t1."所属城市id" = t2."词条id"
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "医院" WHERE "医院名" = '这个城市' AND "所属城市id" = ( SELECT "所属城市id" FROM "城市" WHERE "名称" = '这个城市' AND "所属省份" = '这个城市' )
+SELECT * FROM "医院" WHERE "医院名" = '这家医院' AND "医院等级" = '甲' AND "职工数量" > 1000 AND "院士数量" > 5
+
+SELECT * FROM "医院" WHERE "医院id" = ( SELECT "医院id" FROM "医院排名" WHERE "医院排名.年份" = ( SELECT "医院排名.年份" FROM "医院排名" WHERE "医院排名.医院id" = "医院"."医院id" ) )
+SELECT * FROM "医院" WHERE "医院id" IN ( SELECT "医院id" FROM "医院排名" WHERE "医院排名.排名" = ( SELECT "医院排名.排名" FROM "医院排名" WHERE "医院排名.医院id" = "医院"."医院id" ) )
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 路线.路线名称， 旅行社.旅行社名称 FROM "出境游所含国家" 路线 INNER JOIN "国内游路线" 旅行社 ON 路线.路线id = 旅行社.路线id WHERE 路线.出发城市 = '北京' AND 旅行社.旅行社id = 1
+SELECT 路线.路线名称， 旅行社.旅行社名称 FROM "出境游所含国家" 路线 INNER JOIN "国内游路线" 旅行社 ON 路线.路线id = 旅行社.路线id WHERE 路线.出发城市 = '上海' AND 旅行社.旅行社id = 1
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT 路线名称 FROM "国内游路线" WHERE 天数 = ( SELECT MAX(天数) FROM "国内游路线" )
+SELECT 路线名称 FROM "出境游所含国家" WHERE 旅行天数 = ( SELECT MAX(旅行天数) FROM "出境游所含国家" )
+SELECT 邮轮路线.邮轮公司 FROM "邮轮路线" INNER JOIN "旅行社" ON 邮轮路线.旅行社id = "旅行社"."id" INNER JOIN "出境游所含国家" ON 邮轮路线.出境游路线id = "出境游所含国家"."id" WHERE 邮轮路线."邮轮公司" = ( SELECT 邮轮公司.邮轮公司 FROM "邮轮公司" WHERE 邮轮公司."name" = '康泰邮轮公司' )
+SELECT 旅行社.名称 FROM "旅行社" INNER JOIN "出境游所含国家" ON 旅行社.旅行社id = "出境游所含国家"."id" INNER JOIN "邮轮路线" ON 旅行社.旅行社id = "邮轮路线"."旅行社id" WHERE "邮轮路线"."旅行社id" = ( SELECT "邮轮路线"."旅行社id" FROM "邮轮路线" WHERE "邮轮路线"."邮轮路线id" = '20190418093000' )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM "音箱产品" WHERE "音箱id" IN ( SELECT "音箱id" FROM "产品销售" GROUP BY "产品id" HAVING COUNT(DISTINCT "季度") >= 2 AND COUNT(DISTINCT "产品id") <= 3 )
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM "公司" WHERE id IN ( SELECT id FROM "音箱产品" WHERE名称 = '智能音箱' )
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "产品销售" WHERE (SELECT COUNT(*) FROM "音箱产品" WHERE名称 = '智能音箱' AND 所属公司id = '产品id') > 0
+
+SELECT 音箱产品.名称， 音箱产品.售价， 产品销售.销售量， 产品销售.销售量增长 FROM 音箱产品 INNER JOIN 产品销售 ON 音箱产品.音箱id = 产品销售.音箱id WHERE 产品销售.季度 = ( SELECT 季度 FROM 产品销售 WHERE 销售量 > 0 ORDER BY 销售量 DESC LIMIT 3 )
+SELECT 音箱产品.名称， 音箱产品.售价， 产品销售.销售量， 产品销售.销售量增长 FROM 音箱产品 INNER JOIN 产品销售 ON 音箱产品.音箱id = 产品销售.音箱id GROUP BY 音箱产品.名称， 音箱产品.售价， 产品销售.销售量， 产品销售.销售量增长 HAVING COUNT(DISTINCT 产品名称) > 1
+SELECT 音箱产品.名称， 音箱产品.售价， 产品销售.销售量， 产品销售.销售量增长 FROM 音箱产品 INNER JOIN 产品销售 ON 音箱产品.音箱id = 产品销售.音箱id WHERE 产品销售.所属公司id IN ( SELECT 所属公司id FROM 公司 GROUP BY 公司.名称 )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM 商家 INNER JOIN 平台 ON 商家id = 平台id WHERE 平台名 = '麻辣烫'
+SELECT配送费 FROM "商家平台活动" WHERE 优惠活动 = '满50减20'
+SELECT 起送价格 FROM "商家平台活动" WHERE 优惠活动 = '满50减20'
+
+SELECT 商家.商家 text, 商家平台活动.优惠活动 text, 平台.市场占比 number FROM 商家 INNER JOIN 商家平台活动 ON 商家.商家id = 商家平台活动.商家id INNER JOIN 平台 ON 商家.平台id = 平台.平台id WHERE 平台.市场占比 = 1 AND 商家平台活动.配送费 = 0
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT 商家.商家id, 商家.商家text, 商家平台活动.优惠活动， 商家平台活动.配送费， 商家平台活动.评分， 月售单数 FROM "商家平台活动" AS "月售单数" INNER JOIN "商家" AS "商家id" ON "商家id"."商家id" = "月售单数"."商家id" INNER JOIN "平台" AS "平台id" ON "平台id"."平台id" = "月售单数"."平台id" WHERE 商家."类型" = "商家"."类型"
+SELECT * FROM ( SELECT 商家.商家id, 商家.商家text, 商家平台活动.优惠活动， 商家平台活动.配送费， 商家平台活动.评分， 月售单数 FROM "商家平台活动" AS "月售单数" INNER JOIN "商家" AS "商家id" ON "商家id"."商家id" = "月售单数"."商家id" INNER JOIN "平台" AS "平台id" ON "平台id"."平台id" = "月售单数"."平台id" WHERE 商家."类型" = "商家"."类型" ) AS "query" ORDER BY 月售单数."单数" DESC LIMIT 10
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT t1.平台名， t1.市场占比 FROM "平台" t1 JOIN "商家" t2 ON t1.平台id = t2.平台id WHERE t2.商家id IS NULL
+SELECT (SELECT COUNT(*) FROM "商家" t3 WHERE t3.商家id IN (SELECT 商家id FROM "平台" t4 WHERE t4.平台id = my_的平台id)) AS "商家合作数量" FROM "平台" t1 JOIN "商家" t2 ON t1.平台id = t2.平台id JOIN "商家平台活动" t3 ON t2.商家id = t3.商家id JOIN "平台" t4 ON t3.平台id = t4.平台id AND t4.平台id = my_的平台id
+SELECT COUNT(*) AS "商家数量" FROM "商家" t1 JOIN "商家平台活动" t2 ON t1.商家id = t2.商家id JOIN "平台" t3 ON t2.平台id = t3.平台id WHERE t3.平台id = (SELECT 平台id FROM "平台" WHERE 市场需求量 > 0)
+
+SELECT * FROM 图书；
+SELECT DISTINCT 作者 FROM 图书；
+SELECT 类型 FROM 图书；
+SELECT 售价 FROM 图书；
+
+SELECT * FROM 餐饮公司城市消费 WHERE 人均消费额 < 500
+SELECT t1.公司名， t2.集团名 FROM 餐饮公司城市连锁 t1 JOIN 餐饮公司城市消费 t2 ON t1.公司id = t2.公司id WHERE t2.人均消费额 < 500 AND t1.所属集团 = '集团名'
+SELECT t1.经营年数 FROM 餐饮公司城市连锁 t1 JOIN 餐饮公司城市消费 t2 ON t1.公司id = t2.公司id WHERE t2.人均消费额 < 500 AND t1.经营年数 >= t2.经营年数；
+SELECT t1.城市 FROM 餐饮公司城市连锁 t1 JOIN 餐饮公司城市消费 t2 ON t1.公司id = t2.公司id WHERE t2.人均消费额 < 500 AND t1.城市id IN (SELECT 城市id FROM 城市 WHERE 同比增长 < 0)
+
+SELECT t1.中文名 as 名字 FROM "篮球运动员" t1 JOIN "NBA总冠军" t2 ON t1.球员id = t2.球员id JOIN "球队" t3 ON t2.球队id = t3.球队id WHERE t3.中文队名 = "公牛队"
+SELECT t1.冠军次数 FROM "NBA总冠军" t1 JOIN "球队" t2 ON t1.球队id = t2.球队id JOIN "篮球运动员" t3 ON t2.球员id = t3.球员id WHERE t3.中文名 = " 他"
+SELECT t1.赛区， t2.联盟 FROM "球队" t1 JOIN "篮球运动员" t2 ON t1.球队id = t2.球员id JOIN "NBA总冠军" t3 ON t2.球员id = t3.球员id WHERE t3.中文队名 = "公牛队" AND t3.冠军次数 = 1
+SELECT t1.总教练 FROM "NBA总冠军" t1 JOIN "球队" t2 ON t1.球队id = t2.球队id JOIN "篮球运动员" t3 ON t2.球员id = t3.球员id WHERE t3.中文名 = " 他"
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "篮球运动员" WHERE "参加选秀年" = '2020' AND "是否状元" = '1'
+SELECT * FROM "NBA总冠军" WHERE "赛季" = '2020-2021' AND "球队id" = 'XXX'
+
+CREATE TABLE "杜兰特" ( "球员id" text, "中文名" text, "参加选秀年" time, "是否状元" binary, "获得球队" text, "毕业院校" text, "国籍" text, PRIMARY KEY ("球员id") )
+CREATE TABLE "杜兰特" ( "球员id" text, "中文名" text, "参加选秀年" time, "是否状元" binary, "获得球队" text, "毕业院校" text, "国籍" text, PRIMARY KEY ("球员id") ); INSERT INTO "杜兰特" ("球员id", "中文名", "参加选秀年", "是否状元", "获得球队", "毕业院校", "国籍") VALUES ("1", "杜兰特", "2007", "1", "N/A", "杜兰特", "N/A"); SELECT * FROM "杜兰特" WHERE "获得球队" = "勇士" AND "参加选秀年" = "2014"
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM 平台；
+SELECT 成立时间 FROM 平台； SELECT 成立时间 FROM 图书与平台；
+SELECT 年营业额， COUNT(*) as 总数 FROM 平台 GROUP BY 年营业额 order by 总数 DESC LIMIT 1
+SELECT 会员费 FROM 平台 order by 会员费 DESC limit 1
+
+SELECT 作者， 题目 FROM 图书 JOIN 平台 ON 图书.平台id = 平台.平台id WHERE 图书.书名 = '平凡的世界'
+SELECT 书籍.售价 FROM 图书 JOIN 平台 ON 图书.平台id = 平台.平台id WHERE 书籍.书名 = '平凡的世界'
+SELECT 平台.平台name FROM 平台 JOIN 图书 ON 平台.平台id = 图书.平台id WHERE 图书.书名 = '平凡的世界' AND 平台.成立时间 = '2015-01-01'
+SELECT 平台.年营业额 FROM 平台 JOIN 图书 ON 平台.平台id = 图书.平台id WHERE 图书.书名 = '平凡的世界' AND 平台.成立时间 = '2015-01-01'
+SELECT 平台.年营业额 FROM 平台 JOIN 图书 ON 平台.平台id = 图书.平台id ORDER BY 平台.年营业额 DESC LIMIT 1
+
+SELECT * FROM "出境游所含国家" WHERE 路线id IN ( SELECT 路线id FROM "出境游路线" WHERE 旅行社id IN ( SELECT 旅行社id FROM "旅行社" GROUP BY 旅行社id HAVING COUNT(*) > 0 ) )
+SELECT 天数 FROM "国内游路线" WHERE 旅行社id IN ( SELECT 旅行社id FROM "旅行社" GROUP BY 旅行社id HAVING COUNT(*) > 0 )
+SELECT * FROM "出境游所含国家" ORDER BY 景点数量 DESC
+
+CREATE TABLE "出境游路线" ( "出境游路线id" text, "路线名称" text, "旅行社id" number, "出发城市" text, "成人价格" number, "儿童价格" number, "景点数" number, "门票总价格" number, PRIMARY KEY ("出境游路线id"), FOREIGN KEY ("旅行社id") REFERENCES "旅行社" ("旅行社id") ON DELETE NO ACTION ON UPDATE NO ACTION )
+SELECT 出发城市 FROM "出境游路线" WHERE 旅行社id = ( SELECT 旅行社id FROM "旅行社" WHERE 名称 = '旅行社' )
+SELECT * FROM "出境游路线" ORDER BY "成人价格" DESC LIMIT 1
+SELECT * FROM "出境游路线" ORDER BY "儿童价格" DESC, "成人价格" DESC LIMIT 1
+SELECT * FROM "出境游路线" ORDER BY "成人价格" DESC, "景点数" DESC LIMIT 1
+
+SELECT * FROM 电视剧收视 WHERE 平台id = '1' AND 时间段 = '2022-01-01' AND 首播平台id = '2'
+SELECT 剧名 FROM 电视剧；
+SELECT 剧名 FROM 电视剧 WHERE 播出时间 >= '2018-01-01' AND 播出时间 <= '2018-02-01'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT "民族"."名称" FROM "民族" WHERE "民族"."人口" > 0
+SELECT "民族"."人口" AS "民族人口" FROM "民族" WHERE "民族"."人口" > 0
+SELECT * FROM "民族" ORDER BY "民族"."人口" DESC
+
+SELECT 发行公司 FROM 电视剧 WHERE 剧名 = '甄嬛传'
+SELECT 电视剧 FROM 电视剧收视 WHERE 首播平台id = '1' AND 电视剧编号 = '1001'
+SELECT 电视台， 平台id, 时间段， 首播时间， 上线时间 FROM 电视剧收视 WHERE 电视剧id = '1001' AND 平台id IN ('1', '2', '3') AND 首播时间 = '2019-01-01' AND 上线时间 = '2019-01-15'
+SELECT 首播时间 FROM 电视剧收视 WHERE 电视剧id = '1001' AND 平台id IN ('1', '2', '3') AND 首播时间 = '2019-01-01'
+SELECT 上线时间 FROM 电视剧收视 WHERE 电视剧id = '1001' AND 平台id IN ('1', '2', '3') AND 上线时间 = '2019-01-15'
+
+SELECT * FROM "民族城市" WHERE "民族id" IN ( SELECT "民族id" FROM "民俗节日" WHERE "节日"."人口" > 10 )
+SELECT COUNT(*) FROM "民族城市" WHERE "民族id" IN ( SELECT "民族id" FROM "民俗节日" WHERE "节日"."人口" > 10 )
+SELECT SUM(CASE WHEN "民族id" IN ( SELECT "民族id" FROM "民俗节日" WHERE "节日"."人口" > 10 ) THEN "人口" END) AS total_population FROM "民族城市"
+SELECT "民族id", SUM(CASE WHEN "节日"."人口" > 10 THEN "人口" END) AS total_population FROM "民族城市" GROUP BY "民族id" ORDER BY SUM(CASE WHEN "节日"."人口" > 10 THEN "人口" END) DESC
+SELECT "城市名称", COUNT(*) AS count_city FROM "民族城市" GROUP BY "城市名称" ORDER BY COUNT(*) DESC
+
+SELECT 民族城市.人口， 民族城市.比例， '春节' AS 节日， '中华民族' AS 名称， '汉族' AS 人口语言， '汉族' AS 宗教信仰 from 民俗节日 join 民族城市 on 民俗节日.民族id = 民族城市.民族id
+SELECT 民族城市.人口， 民族城市.比例 from 民族城市 join 民俗节日 on 民族城市.民族id = 民俗节日.民族id
+SELECT count(DISTINCT 民族城市.人口) as count_of_民族的_人口， 民族城市.比例 from 民族城市 join 民俗节日 on 民族城市.民族id = 民俗节日.民族id
+SELECT 民族.名称 from 民族 join 民族城市 on 民族.民族id = 民族城市.民族id
+
+SELECT COUNT(DISTINCT 电视台id) AS num_电视台 FROM 电视台；
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT 收视率 FROM 电视剧收视 WHERE 电视剧id = '123' AND 平台id = '456'
+SELECT * FROM 电视剧 WHERE 电视剧id = '123' AND 平台id = '456'
+SELECT 首播平台id FROM 电视剧 WHERE 电视剧id = '123' AND 平台id = '456'
+
+SELECT 动物.学名， 动物.食性， 动物.是否是人类朋友， 动物.理由 FROM 动物 INNER JOIN 动物朋友 ON 动物.动物id = 动物朋友.动物id INNER JOIN 动物的天敌 ON 动物.动物id = 动物的天敌.动物id WHERE 动物.是否是人类朋友 = 1
+SELECT 动物.学名， 动物.食性， 动物.是否是人类朋友， 动物.理由 FROM 动物 INNER JOIN 动物朋友 ON 动物.动物id = 动物朋友.动物id INNER JOIN 动物的天敌 ON 动物.动物id = 动物的天敌.动物id WHERE 动物.是否是人类朋友 = 0
+SELECT 动物.学名， 动物.食性， 动物.是否是人类朋友， 动物.理由 FROM 动物 INNER JOIN 动物朋友 ON 动物.动物id = 动物朋友.动物id INNER JOIN 动物的天敌 ON 动物.动物id = 动物的天敌.动物id WHERE 动物.是否是人类朋友 = 1
+SELECT 动物.学名， 动物.食性， 动物.是否是人类朋友， 动物.理由 FROM 动物 INNER JOIN 动物朋友 ON 动物.动物id = 动物朋友.动物id INNER JOIN 动物的天敌 ON 动物.动物id = 动物的天敌.动物id WHERE 动物.是否是人类朋友 = 0
+
+SELECT * FROM 比赛 WHERE 名称 = '模式识别'
+SELECT 举办单位， 单位性质 FROM 比赛 WHERE 举办单位 = '百度'
+SELECT * FROM 参赛队伍 WHERE 加入队伍日期 = '2022-01-01' AND 参加比赛id = '1'
+SELECT 成绩 FROM 队伍参赛成绩 WHERE 加入队伍id = '1' AND 参加比赛id = '1'
+
+SELECT * FROM 动物 WHERE 学名 = '狗' AND 是否是人类朋友 = 'Y' AND 理由 = '狗狗是人类的好朋友'
+SELECT * FROM 动物 WHERE 学名 = '猫' AND 是否是人类朋友 = 'N' AND 理由 = '猫咪是人类的敌人'
+SELECT * FROM 动物 WHERE 学名 = '狗' AND 是否是人类朋友 = 'N' AND 天敌原因 = '它们是人类的天敌'
+SELECT * FROM 动物 WHERE 学名 = '狗' AND 是否是人类朋友 = 'Y' AND 理由 = '狗狗是人类的朋友'
+SELECT * FROM 动物 WHERE 学名 = '狗' AND 是否是人类朋友 = 'Y' AND 理由 = '狗狗是人类的朋友'
+
+SELECT * FROM 动物 WHERE 学名 = '人类'
+SELECT * FROM 动物 WHERE 食性 = '肉'
+SELECT * FROM 动物 WHERE 是否是人类朋友 = '0' AND 理由 = '它们除了人类以外，还有哪些朋友'
+SELECT * FROM 动物 WHERE 是否是人类朋友 = '0' AND 理由 = '它们除了人类以外，还有哪些朋友'; SELECT * FROM 动物天敌 WHERE 天敌id = '动物id' AND 克星原因 = '天敌'
+SELECT * FROM 动物天敌 WHERE 天敌id = '动物id' AND 克星原因 = '天敌'
+
+SELECT * FROM 动物 WHERE 学名 = '鳟鱼' AND 食性 = '捕食' AND 是否是人类朋友 = '是' AND 理由 = '可以帮助我们捕食对人类有害的昆虫'
+SELECT * FROM 动物 WHERE 学名 = '鳟鱼' AND 食性 = '捕食' AND 是否是人类朋友 = '是' AND 理由 = '除了人类，它们自己也会有其他的朋友'
+SELECT * FROM 动物 WHERE 学名 = '鳟鱼' AND 食性 = '捕食' AND 是否是人类朋友 = '是' AND 理由 = '它们也是某些动物的天敌'
+
+SELECT * FROM "公司" WHERE id IN (SELECT id FROM "音箱产品" WHERE 所属公司 = '的公司' ON DELETE NO ACTION ON UPDATE NOACTION)
+SELECT 公司名称， 所属国家 FROM "公司" WHERE id IN (SELECT id FROM "音箱产品" WHERE 所属公司 = '的公司' ON DELETE NOACTION ON UPDATE NOACTION)
+SELECT 公司名称， 所属国家， COUNT(*) as 排名 FROM "公司" WHERE id IN (SELECT id FROM "音箱产品" WHERE 所属公司 = '的公司' ON DELETE NOACTION ON UPDATE NOACTION) GROUP BY 公司名称， 所属国家 ORDER BY COUNT(*) DESC LIMIT 1
+
+SELECT "音箱产品"."名称" FROM "音箱产品" LEFT JOIN "产品销售" ON "音箱产品"."音箱id" = "产品销售"."产品id" WHERE "产品销售"."季度" = '2022'
+SELECT "公司"."排名" FROM "公司" LEFT JOIN "音箱产品" ON "公司"."id" = "音箱产品"."所属公司id" LEFT JOIN "产品销售" ON "音箱产品"."音箱id" = "产品销售"."产品id" WHERE "产品销售"."季度" = '2022'
+SELECT * FROM "音箱产品" WHERE "音箱id" IN ( SELECT "音箱id" FROM "产品销售" WHERE "售价" > 300 )
+SELECT "音箱产品"."所属公司id" FROM "音箱产品" LEFT JOIN "公司" ON "音箱产品"."所属公司id" = "公司"."id" WHERE "公司"."名称" = 'ABC公司'
+SELECT "公司"."排名", "音箱产品"."上升名次" FROM "公司" LEFT JOIN "音箱产品" ON "公司"."id" = "音箱产品"."所属公司id" WHERE "公司"."名称" = '百度公司' GROUP BY "公司"."排名", "音箱产品"."上升名次" HAVING COUNT(*) > 1
+
+SELECT 音箱产品.名称 FROM 音箱产品 JOIN 产品销售 ON 音箱产品.音箱id = 产品销售.音箱id WHERE 产品销售.季度 = '2023' AND 产品销售.销售量 > 0
+SELECT 音箱产品.名称， 音箱产品.售价 FROM 音箱产品 JOIN 产品销售 ON 音箱产品.音箱id = 产品销售.音箱id WHERE 产品销售.季度 = '2023' AND 产品销售.销售量 > 0
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM 公司产品 WHERE 公司.id = ( SELECT 公司.id FROM 音箱产品 WHERE 音箱产品.所属公司 = 公司 ORDER BY 排名 DESC LIMIT 1 )
+SELECT 公司名称 FROM 公司产品 WHERE 公司.id = ( SELECT 公司.id FROM 音箱产品 WHERE 音箱产品.所属公司 = 公司 ORDER BY 产品名称 DESC LIMIT 1 )
+SELECT 产品销售数量 FROM 产品销售 WHERE 季度 = '2023' AND 产品id = ( SELECT 产品id FROM 音箱产品 WHERE 音箱产品.所属公司 = '该公司' ORDER BY 产品名称 DESC LIMIT 1 )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM 参赛学生 WHERE 学生id = '12345' GO SELECT * FROM 学生参赛记录 WHERE 加入队伍日期 = '2022-01-01' GO SELECT * FROM 队伍参赛成绩 WHERE 参加比赛id = '1'
+SELECT 学历， age, FROM 参赛学生 WHERE 姓名 = '小明' AND 年龄 = 18 GO SELECT age, FROM 学生参赛记录 WHERE 加入队伍日期 = '2022-01-01'
+SELECT 加入队伍id FROM 学生参赛记录 WHERE 加入队伍日期 = '2022-01-01' FOREIGN KEY (加入队伍id) REFERENCES 参赛队伍 (队伍id)
+SELECT 加入时间 FROM 学生参赛记录 WHERE 加入队伍日期 = '2022-01-01' FOREIGN KEY (加入时间) REFERENCES 比赛 (比赛id)
+SELECT 成绩 FROM 队伍参赛成绩 WHERE 参加比赛id = '1' FOREIGN KEY (参加比赛id) REFERENCES 比赛 (比赛id)
+
+SELECT 比赛.name, 比赛.方向， 比赛.举办单位， 比赛.单位性质， 比赛.奖金数 FROM 比赛 INNER JOIN 参赛队伍 ON 比赛.比赛id = 参赛队伍.比赛id INNER JOIN 参赛学生 ON 比赛.参赛id = 参赛学生.参赛id INNER JOIN 学生参赛记录 ON 参赛学生.学生id = 学生参赛记录.学生id ON 比赛.奖金数 >= ( SELECT 奖金数 FROM 学生参赛记录 WHERE 学生id = 学生参赛记录.学生id AND 加入队伍日期 = 参赛学生.加入队伍日期 ) ORDER BY 奖金数 DESC LIMIT 3
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT 队伍参赛成绩.成绩 FROM 队伍参赛成绩 INNER JOIN 比赛 ON 队伍参赛成绩.加入队伍id = 比赛.比赛id INNER JOIN 参赛队伍 ON 比赛.参赛id = 参赛队伍.参赛id WHERE 比赛.比赛id = ( SELECT 参加比赛id FROM 比赛 WHERE 比赛平台 = 'www.example.com' ) ORDER BY 成绩 DESC LIMIT 3
+
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM 餐饮公司 WHERE 上市股市 = 'A股'
+SQL NOT GET: may be TIMEOUT
+SELECT SUM(占地面积) FROM 餐饮公司城市连锁 WHERE 分店城市id = ( SELECT 分店城市id FROM 餐饮公司城市消费 WHERE 公司id = 'ABC123' )
+
+SELECT c.公司名称， c.总部城市id, c2.分店数量， c2.占地面积， c2.餐位数量， count(DISTINCT s.员工数量) as 员工数量_count FROM "餐饮公司" c INNER JOIN "餐饮公司城市连锁" c2 ON c.公司id = c2.公司id INNER JOIN "城市" s ON c2.城市id = s.城市id GROUP BY c.公司名称， c.总部城市id, c2.分店数量 HAVING 员工数量_count > (SELECT COUNT(DISTINCT s2.员工数量) FROM "城市" s2 WHERE s2.城市id = c.城市id)
+SELECT c.公司名称， c.总部城市id, c.占地面积， c.餐位数量 FROM "餐饮公司" c INNER JOIN "餐饮公司城市连锁" c2 ON c.公司id = c2.公司id INNER JOIN "城市" s ON c2.城市id = s.城市id GROUP BY c.公司名称， c.总部城市id, c.占地面积， c.餐位数量 HAVING count(DISTINCT s.餐位数量) > 10
+SELECT s.员工数量 FROM "餐饮公司城市连锁" c2 INNER JOIN "城市" s ON c2.城市id = s.城市id WHERE s.城市id = ( SELECT 城市id FROM "城市" c WHERE c.名称 = '它' )
+SELECT c.公司名称， c2.分店数量 FROM "餐饮公司城市连锁" c2 INNER JOIN "城市" s ON c2.城市id = s.城市id WHERE s.城市id = ( SELECT 城市id FROM "城市" c WHERE c.名称 = '这个城市' )
+
+SELECT 节日名称 FROM 民俗节日 INNER JOIN 民族 ON 民俗节日.民族id = 民族.词条id INNER JOIN 民族城市 ON 民族城市.民族id = 民族.民族id WHERE 时间 = '2023-02-18'
+SELECT 节日， 时间 FROM 民俗节日 INNER JOIN 民族 ON 民俗节日.民族id = 民族.词条id INNER JOIN 民族城市 ON 民族城市.民族id = 民族.民族id WHERE 时间 = '2023-02-18' GROUP BY 节日， 时间 HAVING COUNT(DISTINCT 时间) > 1
+SELECT 纪念 FROM 民俗节日 INNER JOIN 民族 ON 民俗节日.民族id = 民族.词条id INNER JOIN 民族城市 ON 民族城市.民族id = 民族.民族id WHERE 时间 = '2023-02-18' GROUP BY 纪念 HAVING COUNT(DISTINCT 纪念) > 1
+SELECT 的民族ID, 纪念日 FROM 民俗节日 INNER JOIN 民族 ON 民俗节日.民族id = 民族.词条id INNER JOIN 民族城市 ON 民族城市.民族id = 民族.民族id WHERE 纪念日 = '屈原逝世的日子' GROUP BY 的民族ID, 纪念日 HAVING COUNT(DISTINCT 纪念日) > 1
+SELECT 人口 FROM "民族" INNER JOIN "民族城市" ON "民族城市".民族id = "民族".民族id WHERE 人口 > 0
+
+SELECT * FROM 民族；
+SELECT t1.语言 FROM 民族 t1 WHERE t1.人口 > 1000
+SELECT 民族id, COUNT(*) as 人口 FROM 民族 GROUP BY 民族id ORDER BY COUNT(*) DESC
+SELECT 宗教信仰 from 民族 order by人口 DESC limit 1
+
+CREATE TABLE "民族城市" ( "民族id" number, "城市名称" text, "人口" number, "比例" number, FOREIGN KEY ("民族id") REFERENCES "民族" ("民族id") ON DELETE NO ACTION ON UPDATE NO ACTION )
+CREATE TABLE "民族城市" ( "民族id" number, "城市名称" text, "人口" number, "比例" number, PRIMARY KEY ("民族id"), KEY "人口_比例" ("人口" AND "比例") )
+SELECT * FROM "民族城市" ORDER BY "人口" DESC LIMIT 1
+SELECT "城市名称" AS 城市， "人口最多的人口数量" AS 人口最多的人口， GROUP BY "城市名称" HAVING COUNT(*) = (SELECT COUNT(*) FROM "民族城市" WHERE "城市名称" = "城市名称") FROM "民族城市"
+SELECT "信仰类型" AS 信仰类型， "信仰名称" AS 信仰名称， "信仰内容" AS 信仰内容， FROM "民族" WHERE "民族id" = ( SELECT "民族id" FROM "民族城市" WHERE "城市名称" = "城市名称" ) ORDER BY "信仰内容" DESC LIMIT 1
+
+SQL NOT GET: may be TIMEOUT
+SELECT t1.赛区， t2.球员id FROM "球队" t1 INNER JOIN "篮球运动员" t2 ON t1.球队id = t2.球队id AND t1.中文队名 = t2.中文名
+SELECT * FROM "NBA总冠军" ORDER BY case when t.夺冠次数 = ( SELECT 夺冠次数 FROM "NBA总冠军" t2 WHERE t2.赛季 = ( SELECT赛季 FROM "NBA总冠军" t3 WHERE t3.球队id = t.球队id ) AND t2.总教练 = t.总教练 THEN 1 else 0 END DESC )
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM "篮球运动员" WHERE 中文名 = '张三'
+NO SQL FOUND
+SELECT * FROM "篮球运动员" WHERE 是否状元 = '1' AND 参加选秀年 = '2020'
+NO SQL FOUND
+SELECT * FROM "篮球运动员" WHERE 国籍 = '中国'
+
+CREATE TABLE 电视剧 ( 电视剧编号 TEXT PRIMARY KEY, 剧名 text, 出品时间 time, 出品公司 text, 发行公司 text, 首播平台id number, FOREIGN KEY (首播平台id) REFERENCES 电视台 (电视台id), FOREIGN KEY (剧名) REFERENCES 字典 (词语id) )
+CREATE TABLE 电视剧 ( 电视剧编号 TEXT PRIMARY KEY, 剧名 text, 出品时间 time, 出品公司 text, 发行公司 text, 首播平台id number, FOREIGN KEY (首播平台id) REFERENCES 电视台 (电视台id), FOREIGN KEY (剧名) REFERENCES 字典 (词语id) )
+CREATE TABLE 电视剧 ( 电视剧编号 TEXT PRIMARY KEY, 剧名 text, 出品时间 time, 出品公司 text, 发行公司 text, 首播平台id number, FOREIGN KEY (首播平台id) REFERENCES 电视台 (电视台id), FOREIGN KEY (出品公司) REFERENCES 公司名称 (公司名称) )
+CREATE TABLE 电视剧 ( 电视剧编号 TEXT PRIMARY KEY, 剧名 text, 出品时间 time, 出品公司 text, 发行公司 text, 首播平台id number, FOREIGN KEY (首播平台id) REFERENCES 电视台 (电视台id), FOREIGN KEY (出品公司) REFERENCES 公司名称 (公司名称) )
+SQL NOT GET: may be TIMEOUT
+
+SELECT DATE(的合成时间) as 出品时间 FROM 电视剧 WHERE 剧名 like '%破冰行动%' AND 出品公司 like '%中国电视%'
+SELECT 首播平台id as 首播平台 FROM 电视剧 WHERE 电视剧编号 in ( SELECT 电视剧编号 from 电视剧收视 GROUP BY 电视剧编号 having count(电视剧编号) > 0 )
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 音箱产品.名称 as 产品名称， 音箱产品.售价 as 价格， 音箱产品.排名 as 排名， 音箱产品.上升名次 as 上升名次 FROM "音箱产品" 音箱产品 JOIN "产品销售" 产品销售 ON 产品销售.产品id = 音箱产品.音箱id WHERE 产品销售.季度 = ( SELECT 季度 FROM "产品销售" WHERE 产品名称 = '音箱1' AND 销售数量 >= 1 )
+SELECT 音箱产品.名称 as 产品名称， 音箱产品.售价 as 价格， 音箱产品.排名 as 排名， 音箱产品.上升名次 as 上升名次 FROM "音箱产品" 音箱产品 JOIN "产品销售" 产品销售 ON 产品销售.产品id = 音箱产品.音箱id WHERE 产品销售.产品名称 = '音箱1' AND 产品销售.销售数量 = ( SELECT COUNT(*) FROM "产品销售" WHERE 产品名称 = '音箱1' AND 销售数量 >= 1 )
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM `作者` WHERE `作者id` IN ( SELECT `作者id` FROM `出版图书` WHERE `书名` = '小说' )
+SELECT `作者`.`年龄` FROM `作者` LEFT JOIN `出版图书` ON `出版图书`.`作者id` = `作者`.`作者id` WHERE `出版图书`.`书名` = '小说' AND `出版图书`.`年龄` > 20
+SELECT * FROM `作者` ORDER BY `年龄` DESC LIMIT 10
+
+SELECT * FROM "作者" WHERE "年龄" = ( SELECT MAX("年龄") FROM "作者" )
+SELECT * FROM "出版图书" WHERE "作者id" = ( SELECT "作者id" FROM "作者" ORDER BY "年龄" DESC LIMIT 1 )
+SELECT "字数" AS "总字数", "类型" AS "类型" FROM "出版图书" WHERE "出版图书id" IN ( SELECT "出版图书id" FROM "作者" ORDER BY "年龄" DESC LIMIT 1 )
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT 公司名 FROM 餐饮公司；
+SELECT 公司名，所属集团 FROM 餐饮公司；
+SELECT 股市名称 FROM 餐饮公司 WHERE 上市股市 = '港股'
+SELECT 经营年数， COUNT(*) as 总数 FROM 餐饮公司， 城市消费， 城市连锁 GROUP BY 经营年数 HAVING 总数 > 1
+SELECT 经营年数， COUNT(*) as 总数 FROM 餐饮公司， 城市消费， 城市连锁 GROUP BY 经营年数 HAVING 总数 > 1 ORDER BY COUNT(*) DESC
+
+SELECT * FROM "城市" WHERE名称 = '城市名称'
+SELECT * FROM "餐饮公司城市消费" WHERE 城市id IN (SELECT 城市id FROM "城市" WHERE名称 = '城市名称')
+SELECT * FROM "餐饮公司城市消费" ORDER BY 餐饮收入 DESC LIMIT 1
+SELECT * FROM "餐饮公司城市消费" WHERE 城市id IN (SELECT 城市id FROM "城市" WHERE名称 = '城市名称'); SELECT SUM(同比增长) AS同比增长 FROM "餐饮公司城市消费" GROUP BY 城市id
+
+SELECT t1.公司名称， t1.总部城市id, t1.经营年数 FROM "餐饮公司" t1 JOIN "城市" t2 ON t1.总部城市id = t2.城市id GROUP BY t1.公司名称， t1.总部城市id, t1.经营年数 ORDER BY COUNT(*) DESC LIMIT 1
+SELECT 经营范围 FROM "餐饮公司" WHERE 公司id = ( SELECT 公司id FROM "餐饮公司城市消费" JOIN "城市" t3 ON t3.城市id = t2.城市id WHERE t2.公司名称 = '某公司' )
+SELECT t1.城市id FROM "城市" t1 JOIN "餐饮公司城市消费" t2 ON t1.城市id = t2.城市id WHERE t2.公司id = ( SELECT 公司id FROM "餐饮公司城市连锁" t3 JOIN "城市" t4 ON t3.城市id = t4.城市id WHERE t4.公司名称 = '某公司' )
+
+SELECT t1.公司名称， t1.总部城市id, t1.总消费额， t1.人均消费额， t1.人气， t1.排名 FROM "餐饮公司城市消费" t1 JOIN "城市" t2 ON t1.城市id = t2.城市id JOIN "餐饮公司" t3 ON t1.公司id = t3.公司id WHERE t3.公司id IN (SELECT 公司id FROM "餐饮公司" WHERE 公司名称='公司名称') GROUP BY t1.公司名称， t1.总部城市id, t1.总消费额， t1.人均消费额， t1.人气， t1.排名 ORDER BY人均消费额 DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT t1.省份名称 FROM "城市" t1 JOIN "省份" t2 ON t1.省份id = t2.省份id WHERE t2.省份名称='这个城市所在的省份名称'
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 公司id FROM 餐饮公司 JOIN 城市 ON 公司id = 城市id GROUP BY 公司id ORDER BY COUNT(*) DESC LIMIT 1
+SELECT city.name FROM 城市 JOIN location ON city.cityid = location.cityid WHERE location.name = '他所在的城市'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT累计下载次数 FROM "应用商店" WHERE商店名 = 'Google Play'
+
+SELECT 软件.名称， 软件.用途， APP Store.下载量， APP Store.评价人数， APP Store.好评数 FROM "软件" AS软件 INNER JOIN "应用商店支持国家" AS APP Store ON软件.软件id = APP Store.应用商店id INNER JOIN "应用商店" AS APP Store ON APP Store.商店id =软件.商店id WHERE APP Store.国家 = '中国'
+SELECT 软件.名称， 软件.用途， APP Store.下载量， APP Store.评价人数， APP Store.好评数 FROM "软件" AS软件 INNER JOIN "应用商店支持国家" AS APP Store ON软件.软件id = APP Store.应用商店id INNER JOIN "应用商店" AS APP Store ON APP Store.商店id =软件.商店id WHERE APP Store.国家 = '中国' ORDER BY APP Store.下载量 DESC LIMIT 1
+SELECT 软件.名称， 软件.用途， APP Store.下载量， APP Store.评价人数， APP Store.好评数 FROM "软件" AS软件 INNER JOIN "应用商店支持国家" AS APP Store ON软件.软件id = APP Store.应用商店id INNER JOIN "应用商店" AS APP Store ON APP Store.商店id =软件.商店id WHERE APP Store.国家 = '中国' ORDER BY APP Store.下载量 ASC LIMIT 1
+
+CREATE TABLE "应用商店" ( "商店id" text, "商店名" text, "应用软件数" number, "累计下载次数" number, PRIMARY KEY ("商店id") ) CREATE TABLE "应用商店支持国家" ( "应用商店id" text, "国家" text, "用户是否可以购买应用程序" binary, "开发人员是否可以出售应用程序" binary, FOREIGN KEY ("应用商店id") REFERENCES "应用商店" ("商店id") ON DELETE NOACTION ON UPDATE NOACTION ) CREATE TABLE "软件" ( "软件id" text, "名称" text, "用途" text, PRIMARY KEY ("软件id") ) CREATE TABLE "软件下载" ( "软件id" text, "应用商店id" text, "下载量" number, "评价人数" number, "好评数" number, FOREIGN KEY ("软件id") REFERENCES "软件" ("软件id") ON DELETE NOACTION ON UPDATE NOACTION, FOREIGN KEY ("应用商店id") REFERENCES "应用商店" ("商店id") ON DELETE NOACTION ON UPDATE NOACTION )
+SELECT * FROM "应用商店支持国家" WHERE "国家" = ( SELECT "国家" FROM "用户购买应用程序的国家" WHERE "用户所在国家" = "中国" LIMIT 1 )
+SELECT * FROM "应用商店支持国家" WHERE "国家" = ( SELECT "国家" FROM "用户购买应用程序的国家" WHERE "用户所在国家" = "中国" LIMIT 1 ); UPDATE "应用商店支持国家" SET "开发人员是否可以出售应用程序" = "是" WHERE "应用商店id" = ( SELECT "应用商店id" FROM "应用商店支持国家" WHERE "国家" = ( SELECT "国家" FROM "用户购买应用程序的国家" WHERE "用户所在国家" = "中国" LIMIT 1 ) LIMIT 1 )
+SELECT COUNT(*) FROM "应用商店" WHERE "应用商店id" IN ( SELECT "应用商店id" FROM "应用商店支持国家" WHERE "国家" IN ( SELECT "国家" FROM "用户购买应用程序的国家" WHERE "用户所在国家" = "中国" ORDER BY "累计下载次数" DESC LIMIT 1 ) LIMIT 1 )
+SELECT COUNT(*) FROM "应用商店" WHERE "商店id" = ( SELECT "商店id" FROM "应用商店支持国家" WHERE "国家" = ( SELECT "国家" FROM "用户购买应用程序的国家" WHERE "用户所在国家" = "中国" LIMIT 1 ) LIMIT 1 )
+
+CREATE TABLE "应用商店" ( "商店id" text, "商店名" text, "应用软件数" number, "累计下载次数" number, PRIMARY KEY ("商店id") ) CREATE TABLE "应用商店支持国家" ( "应用商店id" text, "国家" text, "用户是否可以购买应用程序" binary, "开发人员是否可以出售应用程序" binary, FOREIGN KEY ("应用商店id") REFERENCES "应用商店" ("商店id") ON DELETE NO ACTION ON UPDATE NO ACTION ) CREATE TABLE "软件" ( "软件id" text, "名称" text, "用途" text, PRIMARY KEY ("软件id") ) CREATE TABLE "软件下载" ( "软件id" text, "应用商店id" text, "下载量" number, "评价人数" number, "好评数" number, FOREIGN KEY ("软件id") REFERENCES "软件" ("软件id") ON DELETE NO ACTION ON UPDATE NO ACTION, FOREIGN KEY ("应用商店id") REFERENCES "应用商店" ("商店id") ON DELETE NO ACTION ON UPDATE NO ACTION )
+SELECT * FROM "软件下载" WHERE "软件id" = ( SELECT "软件id" FROM "应用商店" WHERE "应用商店name" = 'Google Play' ORDER BY "下载量" DESC LIMIT 1 )
+SELECT * FROM "软件下载" WHERE "好评数" = ( SELECT "好评数" FROM "软件" WHERE "软件id" = ( SELECT "软件id" FROM "应用商店" WHERE "应用商店name" = 'Google Play' ORDER BY "下载量" DESC LIMIT 1 ) )
+
+SQL NOT GET: may be TIMEOUT
+CREATE TABLE 动物 ( 动物id TEXT PRIMARY KEY, 学名 text, 食性 text, 是否是人类朋友 binary, 理由 text ) CREATE TABLE 动物朋友 ( 动物id number, 朋友id number, FOREIGN KEY (动物id) REFERENCES 动物 (动物id), FOREIGN KEY (朋友id) REFERENCES 动物 (动物id) ) CREATE TABLE 动物的天敌 ( 动物id number, 天敌id number, 克星原因 text, FOREIGN KEY (动物id) REFERENCES 动物 (动物id), FOREIGN KEY (天敌id) REFERENCES 动物 (动物id) )
+CREATE TABLE 动物 ( 动物id TEXT PRIMARY KEY, 学名 text, 食性 text, 是否是人类朋友 binary, 理由 text ) CREATE TABLE 动物朋友 ( 动物id number, 朋友id number, FOREIGN KEY (动物id) REFERENCES 动物 (动物id), FOREIGN KEY (朋友id) REFERENCES 动物 (动物id) ) CREATE TABLE 动物的天敌 ( 动物id number, 天敌id number, 克星原因 text, FOREIGN KEY (动物id) REFERENCES 动物 (动物id), FOREIGN KEY (天敌id) REFERENCES 动物 (动物id) )
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM "台风影响的中国省份" a INNER JOIN "台风影响的国家" b ON a.台风id = b.台风id WHERE b.经济损失 > 1000
+SELECT 台风id, 台风名称， 登陆地点， 登陆时间 FROM "台风" WHERE 登陆时间 >= '2022-01-01' AND 登陆时间 <= '2022-02-18'
+SELECT台风id, MAX(登陆强度) as max_强度 FROM "台风" GROUP BY台风id ORDER BY MAX(登陆强度) asc
+SQL NOT GET: may be TIMEOUT
+
+SELECT COUNT(*) AS 经济损失 FROM "台风影响的国家" WHERE "台风id" IN ( SELECT "台风id" FROM "台风" WHERE "名称" = '台风1986A' AND "登陆地点" = '香港' AND "登陆时间" = '1986年1月20日' AND "登陆强度" = 1 AND "持续天数" = 3 ) AND "台风id" IN ( SELECT "台风id" FROM "台风" WHERE "名称" = '台风1993J' AND "登陆地点" = '菲律宾' AND "登陆时间" = '1993年2月25日' AND "登陆强度" = 2 AND "持续天数" = 10 ) GROUP BY "台风id"
+SELECT * FROM "台风影响的国家" ORDER BY COUNT(*) DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT t1.国家， t1.经济损失 FROM "台风影响的国家" t1 INNER JOIN "台风影响的中国省份" t2 ON t1.台风id = t2.台风id AND t1.国家 = t2.省份；
+SELECT column_name, COUNT(*) as count FROM table_name GROUP BY column_name ORDER BY COUNT(*) DESC
+SELECT t1.台风id, t2.死亡人数 FROM "台风影响的国家" t1 INNER JOIN "台风影响的中国省份" t2 ON t1.台风id = t2.台风id LEFT JOIN "台风" t3 ON t1.国家 = t3.台风id AND t2.省份 = t3.台风id GROUP BY t1.台风id, t2.死亡人数 HAVING COUNT(*) > 0
+
+SELECT * FROM "餐厅订单" WHERE 商家id = (SELECT 商家id FROM "商家") AND 类型 = '西式快餐'
+SELECT * FROM "商家平台活动" WHERE 优惠活动 = '折扣' AND 配送费 >= 0
+SELECT评分 FROM "商家平台活动" WHERE 月售单数 > 0
+SELECT MAX(评分) AS最高分 FROM "商家平台活动"
+
+CREATE TABLE 篮球运动队 ( id TEXT PRIMARY KEY, 队名 TEXT, 所属国家 TEXT, 成立时间 time, 现任主教练 TEXT, 现在世界排名 number ); CREATE TABLE 奥运会成绩 ( 年份 INT, 奥运会名称 TEXT, 名次 INT, 运动队id INT REFERENCES 篮球运动队 (id), 主教练 TEXT ); CREATE TABLE 奥运会交手记录 ( 对手id number, 比分 number, 是否胜利 BOOLEAN, 球队id REFERENCES 篮球运动队 (id), 赛事类型 TEXT, 年份 INT, 奥运会 STRING, 比赛日期 DATE, FOREIGN KEY (对手id) REFERENCES 篮球运动队 (id) )
+SELECT 所属国家 FROM 篮球运动队 WHERE 成立时间 >= ?
+SELECT 成立时间 FROM 篮球运动队 WHERE 成立时间 >= ?
+SELECT 成立时间 FROM 篮球运动队 ORDER BY 成立时间 DESC LIMIT ?
+
+SELECT现任主教练 FROM 篮球运动队；
+SELECT 名次 FROM 奥运会成绩 WHERE 年份 = '2012'
+SELECT 主教练 FROM 奥运会交手记录；
+
+SELECT s1.地区生产总值， s1.生产总值增长率， s2.第二产业总值， s2.第三产业总值 FROM 城市 s1 INNER JOIN 城市第一产业 s2 ON s1.城市id = s2.城市id INNER JOIN 城市贸易产业 s3 ON s1.城市id = s3.城市id INNER JOIN 城市金融产业 s4 ON s1.城市id = s4.城市id WHERE s4.金融业增加值 = ( SELECT SUM(金融业增加值) FROM 城市 s5 WHERE s5.城市id = 城市.城市id AND s5.增长率 = 1.1 )
+SELECT 地区生产总值， 生产总值增长率 FROM 城市 WHERE 城市id = ( SELECT 城市id FROM 城市表 )
+SELECT s1.进口额， s1.进口额增长率 FROM 城市贸易产业 s1 INNER JOIN 城市表 s2 ON s1.城市id = s2.城市id WHERE s2.城市id = ( SELECT 城市id FROM 城市 )
+SELECT s1.出口额， s1.出口额增长率 FROM 城市贸易产业 s1 INNER JOIN 城市表 s2 ON s1.城市id = s2.城市id WHERE s2.城市id = ( SELECT 城市id FROM 城市 )
+
+SELECT city.城市名称， city.所属省份， sum(city.地铁运营里程) AS 地铁运营里程 FROM city JOIN 城市地铁票价 ON city.城市id = city.城市id JOIN 城市地铁里程 ON city.城市id = city地铁里程.城市id JOIN 中国地铁 ON city地铁里程.城市id = 中国地铁.城市id GROUP BY city.城市名称， city.所属省份 ORDER BY 地铁运营里程 DESC LIMIT 1
+SELECT city.城市名称， city.所属省份， sum(city.日均客运量) AS 日均客运量 FROM city JOIN 城市地铁票价 ON city.城市id = city.城市id JOIN 城市地铁里程 ON city.城市id = city地铁里程.城市id JOIN 中国地铁 ON city地铁里程.城市id = 中国地铁.城市id GROUP BY city.城市名称， city.所属省份 ORDER BY 日均客运量 DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT COUNT(*) FROM 城市地铁里程 WHERE 城市 = '广州'
+SELECT SUM(成本) AS 每公里成本 FROM 城市地铁日均客运量 WHERE 城市 = '中国地铁'
+SELECT 里程 AS 能坐多少里 FROM 城市地铁票价 WHERE 票价 = '5'
+
+CREATE TABLE 参赛学生 ( 学生id TEXT PRIMARY KEY, 姓名 TEXT, 年龄 number, 学历 text, 学校 text )
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM 参赛学生 ORDER BY 年龄 DESC LIMIT 1
+
+CREATE TABLE 比赛 ( 比赛id TEXT PRIMARY KEY, 名称 text, 方向 text, 举办单位 text, 单位性质 text, 奖金数 number, 录取队伍数量 number, 比赛平台 text ); CREATE TABLE 参赛队伍 ( 队伍id TEXT PRIMARY KEY, 队名 text ); CREATE TABLE 学生参赛记录 ( 学生id TEXT REFERENCES 参赛队伍 (队伍id), 加入队伍日期 DATE ); CREATE TABLE 队伍参赛成绩 ( 加入队伍id number, 参加比赛id number, 成绩 text, FOREIGN KEY (加入队伍id) REFERENCES 参赛队伍 (队伍id), FOREIGN KEY (参加比赛id) REFERENCES 比赛 (比赛id) )
+SELECT x.方向 FROM 比赛 x INNER JOIN 参赛队伍 y ON x.比赛id = y.比赛id AND x.方向 = y.方向 INNER JOIN 学生参赛记录 z ON x.比赛id = z.比赛id AND x.加入队伍id = z.学生id
+SELECT 举办单位.单位性质 FROM 比赛举办单位 INNER JOIN 比赛 ON 比赛举办单位.比赛id = 比赛.比赛id INNER JOIN 单位性质 ON 比赛举办单位.单位性质id = 单位性质.单位性质id WHERE 比赛.方向 = '男' AND 单位性质.单位性质type = '机关'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM 参赛队伍；
+SELECT * FROM 学生参赛记录 WHERE 加入队伍日期 = ( SELECT DATE FROM 比赛 WHERE 比赛id = ? )
+SELECT * FROM 学生参赛记录 WHERE 学校 = ( SELECT 学校 FROM 参赛学生 WHERE 学生id = ? )
+SELECT 日期 FROM 学生参赛记录 WHERE 加入队伍日期 = ( SELECT 日期 FROM 比赛 WHERE 比赛id = ? )
+
+SELECT * FROM 比赛；
+SELECT 比赛平台 FROM 比赛；
+SELECT * FROM 比赛 WHERE 比赛平台 = 'XX'
+SQL NOT GET: may be TIMEOUT
+
+SELECT * FROM 城市 WHERE 城市名称 = '北京'
+SELECT 城市.城市名称， 省份.所属省份 FROM 城市 INNER JOIN 省份 ON 城市.城市ID = 省份.城市ID
+SELECT 日均客运量 FROM 城市地铁日均客运量 WHERE 城市名称 = '上海'
+
+SELECT * FROM 电视台 WHERE 开播时间早于 '2022-01-01 00:00:00'
+SELECT隶属机构 FROM 电视台 WHERE 电视台id = '5'
+SELECT * FROM 电视台 WHERE 隶属机构 = '该机构'
+SELECT 电视剧编号， 上线时间 FROM 电视剧收视 WHERE 平台id = '1' AND 时间段 = '2022-03-01 10:00:00'
+
+SELECT * FROM 电视剧收视 WHERE 平台id = '1' AND 时间段 = '2020-01-01' AND 电视台id = '2'
+SELECT 收视率 FROM 电视剧收视 WHERE 电视剧id = '101' AND 平台id = '2' AND 时间段 = '2020-01-01' AND 电视台id = '3'
+SELECT 出品公司， 发行公司 FROM 电视剧 WHERE 电视剧编号 = '102'
+
+SELECT * FROM 电视剧收视 WHERE 平台id = '1' AND 时间段 = '2021-09-15 10:00:00' AND 出品公司 = '腾讯影业'
+SELECT 时间 AS 出品时间 FROM 电视剧 WHERE 剧名 = '电视剧3' AND 出品公司 = '腾讯影业'
+SELECT 电视台id, 时间段 FROM 电视剧收视 WHERE 电视剧id = '电视剧3' AND 平台id = '1' AND 时间段 = '2021-09-15 10:00:00'
+
+SELECT * FROM 图书 WHERE 类型 = '小说'
+SELECT 作者 FROM 图书 WHERE 类型 = '少儿图书'
+SELECT 平台id FROM 图书 WHERE 书名 = '哈利波特与被诅咒的孩子'
+
+SELECT * FROM 图书 JOIN 平台 ON 图书.平台id = 平台.平台id WHERE 平台.成立时间 = ( SELECT MAX(成立时间) FROM 平台 GROUP BY 平台名 )
+SELECT 平台.年营业额， 平台.会员费 FROM 平台 WHERE 平台.成立时间 = ( SELECT MAX(成立时间) FROM 平台 GROUP BY 平台名 )
+SELECT 书籍类型 FROM 图书 JOIN 平台 ON 图书.平台id = 平台.平台id WHERE 平台.成立时间 = ( SELECT MAX(成立时间) FROM 平台 GROUP BY 平台名 )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT MAX(评分) AS max_score FROM 图书与平台 WHERE 书名 in (SELECT 书名 FROM 图书 WHERE 图书id = (SELECT 图书id FROM 图书与平台 WHERE 平台id = (SELECT 平台id FROM 平台)) GROUP BY 书名)
+SELECT 平台name AS平台_name FROM 平台 WHERE 平台name IN (SELECT 平台name FROM 书籍) GROUP BY 平台name HAVING COUNT(DISTINCT book.平台id) > 1
+SELECT SUM(number) AS加入购物车人数， SUM(binary) AS收藏人数 FROM 图书与平台 WHERE 书名 in (SELECT 书名 FROM 图书 WHERE 图书id = (SELECT 图书id FROM 图书与平台)) GROUP BY 平台id
+SELECT 电子书售价 AS电子书_price FROM 图书与平台 WHERE 书名 in (SELECT 书名 FROM 图书 WHERE 图书id = (SELECT 图书id FROM 图书与平台)) GROUP BY 平台id HAVING 电子书售价大于等于 (SELECT 电子书售价 FROM 电子书) * (SELECT COUNT(DISTINCT 电子书id) FROM 电子书)
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT软件id, COUNT(*) as 好评数 FROM "软件下载" GROUP BY软件id ORDER BY 好评数 DESC LIMIT 1
+SELECT商店名 FROM "应用商店支持国家" WHERE 商店名 = '应用商店'
+SELECT软件id, 的总和 FROM "软件下载" GROUP BY软件id ORDER BY 的总和 DESC LIMIT 1
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT DISTINCT a.* FROM 出境游所含国家 a INNER JOIN 出境游路线 b ON a.路线id = b.出境游路线id INNER JOIN 国内游路线 c ON a.路线id = c.国内游路线id INNER JOIN 旅行社 d ON c.旅行社id = d.旅行社id WHERE d.名称 = '中国' AND b.旅行社id IN (SELECT 旅行社id FROM 旅行社 WHERE 名称 = '中国') AND b.出发城市 = '上海' AND b.出境游路线id NOT IN (SELECT 出境游路线id FROM 出境游路线 WHERE 旅行社id = d.旅行社id) AND a.旅行天数 > 1
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT b.路线名称 FROM 出境游路线 b INNER JOIN 出境游所含国家 a ON b.路线id = a.出境游路线id WHERE a.名称 = '某旅行社' AND b.旅行社id = '某旅行社'
+
+SELECT路线id FROM "出境游所含国家" WHERE 国家 = '英国' AND 旅行天数 = (SELECT 天数 FROM "国内游路线" WHERE 旅行社id = '旅行社' AND 路线id = '英国+爱尔兰+威尔士精选之旅' AND 路线名称 = '英国+爱尔兰+威尔士精选之旅')
+SELECT 成人价格， 儿童价格 FROM "出境游路线" WHERE 路线id = (SELECT路线id FROM "出境游所含国家" WHERE 国家 = '英国' AND 旅行天数 = (SELECT 天数 FROM "国内游路线" WHERE 旅行社id = '旅行社' AND 路线id = '英国+爱尔兰+威尔士精选之旅' AND 路线名称 = '英国+爱尔兰+威尔士精选之旅') ) )
+SELECT 景点数量 FROM "出境游路线" WHERE 路线id = (SELECT路线id FROM "出境游所含国家" WHERE 国家 = '英国' AND 旅行天数 = (SELECT 天数 FROM "国内游路线" WHERE 旅行社id = '旅行社' AND 路线id = '英国+爱尔兰+威尔士精选之旅' AND 路线名称 = '英国+爱尔兰+威尔士精选之旅') ) )
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT t1.name, t1.级别 FROM "旅行社" t1 INNER JOIN "出境游所含国家" t2 ON t1.旅行社id = t2.旅行社id INNER JOIN "国内游路线" t3 ON t1.旅行社id = t3.旅行社id INNER JOIN "邮轮路线" t4 ON t1.旅行社id = t4.旅行社id WHERE t2.路线id = ( SELECT路线id FROM "出境游所含国家" t5 WHERE t5.国家 = '香港' AND t5.旅行天数 >= 2 AND t5.景点数量 = 1 AND t5.旅行社id IS NOT NULL )
+
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SELECT t1.name, t1.所属省份， t1.餐饮收入， t1.同比增长， t2.名称， t2.所属省份， t2.餐饮收入， t2.同比增长， t3.公司名， t3.总部城市id, t3.所属集团， t3.上市股市， t3.经营范围 FROM "城市" t1 JOIN "餐饮公司" t2 ON t1.城市id = t2.总部城市id JOIN "餐饮公司城市消费" t3 ON t2.公司id = t3.公司id JOIN "餐饮公司城市连锁" t4 ON t3.城市id = t4.城市id WHERE t1.名称 = '它' AND t2.名称 = '餐饮公司' AND t3.名称 = '城市' AND t4.城市id = '它所在的省份' AND t2.经营年数 = '它经营了的年份'
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT t1.name, t1.所属省份， t1.餐饮收入， t1.同比增长， t2.城市， t2.总消费额， t2.人均消费额， t2.人气， t2.排名， t3.分店数量， t3.占地面积， t3.餐位数量， t3.员工数量 FROM "城市" t1 INNER JOIN "餐饮公司" t2 ON t1.城市id = t2.总部城市id INNER JOIN "餐饮公司城市消费" t3 ON t2.公司id = t3.公司id INNER JOIN "城市" t4 ON t3.城市id = t4.城市id WHERE t4.name = '上海'
+SELECT * FROM "餐饮公司城市连锁" t1 INNER JOIN "餐饮公司城市消费" t2 ON t1.分店数量 = t2.分店数量 AND t1.公司id = t2.公司id INNER JOIN "城市" t3 ON t2.城市id = t3.城市id WHERE t3.name = '北京市'
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM 电视机品牌 WHERE 品牌名 = '中国'
+SELECT 市场份额 FROM 电视机品牌 WHERE 品牌名 = '中国'
+SELECT 公司 FROM 电视机品牌 WHERE 品牌名 = '中国'
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT price FROM天猫精灵 WHERE name = '天猫精灵' AND所属公司 = '阿里巴巴集团'
+SELECT 产品销售.销售量 FROM 产品销售 WHERE 季度 = '第四季度' AND 产品id = ( SELECT productid FROM 音箱产品 WHERE name = '天猫精灵' AND type = '音箱' )
+SELECT 产品销售.销售量增长量 FROM 产品销售 WHERE 季度 = '第四季度' AND 产品id = ( SELECT productid FROM 音箱产品 WHERE name = '天猫精灵' AND type = '音箱' )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM 民族 WHERE 民族id NOT IN (SELECT 民族id FROM 民族城市) ON DELETE NOACTION ON UPDATE NOACTION
+SELECT COUNT(*) as num FROM 民族 WHERE 民族id = (SELECT 民族id FROM 民族城市) ON DELETE NOACTION ON UPDATE NOACTION
+SELECT t1.text FROM 民俗节日 t1, 民族 t2 WHERE t1.民族id = t2.词条id AND t1.text = t2.语言 AND t2.text = '中文'
+SELECT t1.宗教信仰 FROM 民族 t1, 宗教 t2 WHERE t1.民族id = t2.词条id AND t1.宗教信仰 = t2.宗教信仰；
+SELECT t1.节日 FROM 民俗节日 t1, 民族 t2 WHERE t1.民族id = t2.词条id AND t1.节日 = t2.节日；
+
+SELECT * FROM 篮球运动员 WHERE 获得球队 = 'NBA总冠军'
+SELECT * FROM 篮球运动员 WHERE 毕业院校 = '德克萨斯大学'
+SELECT * FROM 篮球运动员 WHERE 国籍 = '中国'
+SELECT * FROM 篮球运动员 WHERE 参加选秀年 = '2020'
+SELECT 球队id FROM 篮球运动员 WHERE 球队id = 'NBA总冠军'
+
+SELECT * FROM "篮球运动员" WHERE "是否状元" = 1
+SELECT * FROM "篮球运动员" WHERE "中文名" = ' Curry' AND "毕业院校" = 'NBA总冠军'
+SELECT * FROM "篮球运动员" WHERE "获得球队" = 'NBA总冠军'
+SELECT * FROM "篮球运动员" WHERE "获得球队" = 'NBA总冠军' AND "赛季" = '2021'
+SELECT * FROM "球队" WHERE "球队id" = 'NBA总冠军'
+
+SELECT * FROM 球队 WHERE 赛区 = '北京' AND 夺冠次数 > 0
+SELECT t1.球队id, t2.赛区， t2.所属联盟， t2.夺冠次数， SELECT * FROM 篮球运动员 t1 INNER JOIN 球队 t2 ON t1.球员id = t2.球员id WHERE t2.赛区 = '西南' AND t2.夺冠次数 > 0
+SELECT t1.联盟， t2.球队id, t2.赛区， t2.所属联盟， t2.夺冠次数， SELECT * FROM 篮球运动员 t1 INNER JOIN 球队 t2 ON t1.球员id = t2.球员id WHERE t2.赛区 = '它所在的联盟' AND t2.所属联盟 = 'NBA'
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM "NBA总冠军" WHERE "赛季" = '2005-06' AND "总教练" = '谁'
+SELECT * FROM "NBA总冠军" WHERE "球队id" = '谁' AND "总教练" = '他'
+SELECT "联盟" FROM "球队" WHERE "球队id" = '这个球队'
+
+SELECT * FROM "篮球运动员" WHERE "球员id" = ( SELECT "球员id" FROM "NBA总冠军" WHERE "赛季" = '2022' AND "球队id" = '勇士队' )
+SELECT * FROM "篮球运动员" WHERE "球员id" = ( SELECT "球员id" FROM "NBA总冠军" WHERE "赛季" = '2022' AND "球队id" = '骑士队' )
+SELECT * FROM "篮球运动员" WHERE "参加选秀年" = ( SELECT "参加选秀年" FROM "NBA总冠军" WHERE "球队id" = '勇士队' )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT * FROM "台风影响的中国省份" t1 INNER JOIN "台风影响的国家" t2 ON t1."台风id" = t2."台风id" WHERE t2."国家" = '海南'
+SELECT t1."登陆时间" AS 登陆时间 FROM "台风影响的中国省份" t1 INNER JOIN "台风影响的国家" t2 ON t1."台风id" = t2."台风id" WHERE t2."国家" = '台风' AND t2."名称" = 'SPF1'
+SELECT t1."经济损失" AS 经济损失 FROM "台风影响的中国省份" t1 INNER JOIN "台风影响的国家" t2 ON t1."台风id" = t2."台风id" WHERE t2."国家" = '台风' AND t2."名称" = 'SPF1' AND t1."省份" = '海南'
+
+SELECT * FROM 电视机品牌
+SELECT 品牌名 FROM 电视机品牌 WHERE 公司 = '中国'
+SELECT 市场份额 FROM 电视机品牌 WHERE 公司 = '中国' GROUP BY 品牌名 ORDER BY 市场份额 DESC
+
+SELECT 型号 FROM 电视机平台售卖 WHERE 当前售价 = ( SELECT MAX(当前售价) FROM 电视机平台售卖 )
+SELECT 品牌名 FROM 电视机品牌 WHERE 型号 = ( SELECT 型号 FROM 电视机平台售卖 WHERE 当前售价 = ( SELECT MAX(当前售价) FROM 电视机平台售卖 ) )
+SELECT 定价 FROM 电视机型号 WHERE 定价 = ( SELECT 定价 FROM 电视机平台售卖 WHERE 型号 = ( SELECT 型号 FROM 电视机平台售卖 WHERE 当前售价 = ( SELECT MAX(当前售价) FROM 电视机平台售卖 ) ) )
+SELECT 平台 FROM 电视机平台售卖 WHERE 型号 = ( SELECT 型号 FROM 电视机平台售卖 WHERE 当前售价 = ( SELECT MAX(当前售价) FROM 电视机平台售卖 ) )
+SELECT 用户评分 FROM 电视机平台售卖 WHERE 型号 = ( SELECT 型号 FROM 电视机平台售卖 WHERE 当前售价 = ( SELECT MAX(当前售价) FROM 电视机平台售卖 ) )
+
+CREATE TABLE "医院" ( "医院id" text, "医院名" text, "所属城市id" number, "医院等级" number, "职工数量" number, "院士数量" number, "科室数量" number, "重点专科数量" number, PRIMARY KEY ("医院id"), FOREIGN KEY ("所属城市id") REFERENCES "城市" ("词条id") ON DELETE NO ACTION ON UPDATE NO ACTION )
+CREATE TABLE "医院" ( "医院id" text, "医院名" text, "所属城市id" number, "医院等级" number, "职工数量" number, "院士数量" number, "科室数量" number, "重点专科数量" number, PRIMARY KEY ("医院id"), FOREIGN KEY ("所属城市id") REFERENCES "城市" ("词条id") ON DELETE NO ACTION ON UPDATE NO ACTION ) SELECT * FROM "医院" WHERE "医院等级" IN (3, 4, 5) AND "职工数量" > 1000
+SELECT * FROM "医院" WHERE "医院等级" = '三级甲等'
+SELECT t1.城市名， t2.医院名 FROM "城市" t1 INNER JOIN "医院" t2 ON t1.城市id = t2.所属城市id WHERE t2.医院等级 = '三级甲等' GROUP BY t1.城市名， t2.医院名 HAVING COUNT(DISTINCT t2.医院名) = (SELECT COUNT(DISTINCT t1.医院名) FROM "城市" t1 WHERE t1.城市id = t2.所属城市id)
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT t1.年份， t1.医院排名， t2.接待病患数量， t2.手术数量 FROM "医院" t1 INNER JOIN "医院排名" t2 ON t1.医院id = t2.医院id WHERE t2.排名 = ( SELECT MAX(排名) FROM "医院排名" t3 WHERE t3.年份 = t1.年份 )
+SELECT t1.手术数量 FROM "医院排名" t1 INNER JOIN "城市" t2 ON t1.医院id = t2.城市id WHERE t2.名称 = ( SELECT t2.名称 FROM "城市" t22 WHERE t22.所属省份 = t2.名称 )
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT 品牌名， 公司， 国家， 市场份额 FROM 电视机品牌 WHERE 国家 = '中国'
+SELECT COUNT(DISTINCT 市场份额) FROM 电视机品牌 WHERE 国家 = '中国'
+SELECT 型号 FROM 电视机平台售卖 WHERE 平台 = 'YouTube' AND 型号id IN ( SELECT 型号id FROM 电视机型号 WHERE 产品 = '智能电视' )
+
+SELECT 品牌价值， 品牌名， 公司名， 国家名， 市场份额 FROM 电视机品牌 WHERE 品牌名 = '海信'
+SELECT 型号 FROM 电视机型号 WHERE 品牌id = '海信' AND 型号 = 'AIO T5'
+SELECT 屏幕尺寸， 屏幕比例， 分辨率 FROM 电视机型号 WHERE 品牌id = '海信' AND 型号 = 'AIO T5'
+SELECT 平台 FROM 电视机平台售卖 WHERE 型号id = '海信' AND 平台 = 'PC'
+
+SELECT * FROM 电视机平台售卖 INNER JOIN 电视机型号 ON 电视机平台售卖.型号id = 电视机型号.型号id INNER JOIN 电视机品牌 ON 电视机型号.品牌id = 电视机品牌.品牌id WHERE 电视机品牌.品牌名 = '天猫商城'
+SELECT 型号， MAX(当前售价) AS 当前售价 FROM 电视机平台售卖 GROUP BY 型号 HAVING MAX(当前售价) > 0
+SELECT COUNT(*) AS 销售量 FROM 电视机平台售卖 INNER JOIN 电视机型号 ON 电视机平台售卖.型号id = 电视机型号.型号id WHERE 电视机型号.品牌id = 电视机品牌.品牌id AND 电视机平台售卖.当前售价 >= 电视机品牌.市场总售价
+SELECT SUM(电视机平台售卖.观看电视日平均用时) AS 观看电视日平均用时， SUM(电视机型号.用户评分) AS 用户评分， CASE WHEN 电视机型号.产品定位 = '高清电视' THEN 1 WHEN 电视机型号.产品定位 = '智能电视' THEN 2 WHEN 电视机型号.产品定位 = '非智能电视' THEN -1 END AS 电视机类型 FROM 电视机平台售卖 INNER JOIN 电视机型号 ON 电视机平台售卖.型号id = 电视机型号.型号id GROUP BY 电视机型号.型号id HAVING COUNT(*) > 0
+
+SELECT 型号id, MAX(用户评分) AS max_评分 FROM 电视机平台售卖 GROUP BY 型号id ORDER BY max_评分 DESC LIMIT 1
+SQL NOT GET: may be TIMEOUT
+SELECT 型号id, 产品定位 FROM 电视机平台售卖 WHERE 型号id = ? ORDER BY 产品定位 DESC LIMIT 1
+SELECT 型号id, 背光灯寿命 FROM 电视机平台售卖 WHERE 型号id = ? ORDER BY 背光灯寿命 DESC LIMIT 1
+
+SELECT * FROM 羽毛球球员 INNER JOIN 重要赛事 ON 羽毛球球员.球员id = 重要赛事.赛事id INNER JOIN 奥运会冠亚军 ON 羽毛球球员.球员id = 奥运会冠亚军.金牌获得者id INNER JOIN 冠军国家 ON 羽毛球球员.球员id = 冠军国家.国家名称 WHERE 奥运会冠亚军.奥运会名称 = '2022年北京冬奥会' AND 冠军国家.赛事名称 = '北京冬奥会' AND 李敬元.球员姓名 = '李敬元'
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM 羽毛球球员 WHERE 球员id = ( SELECT 球员id FROM 重要赛事 WHERE 赛事id = ? )
+SELECT 球员姓名， 国籍 FROM 羽毛球球员 WHERE 球员id = ( SELECT 球员id FROM 重要赛事 WHERE 赛事id = ? )
+SELECT 球员姓名， 身高 FROM 羽毛球球员 WHERE 球员id = ( SELECT 球员id FROM 重要赛事 WHERE 赛事id = ? )
+SELECT 球员姓名， 身高 FROM 羽毛球球员 ORDER BY 身高 DESC LIMIT 10
+
+SELECT * FROM 奥运会冠亚军 WHERE 奥运会名称 = '悉尼奥运会' AND 项目名称 IN ('羽毛球男子单打', '羽毛球女子单打', '羽毛球混合双打')
+SELECT * FROM 奥运会冠亚军 WHERE 奥运会名称 = '悉尼奥运会' AND 项目名称 NOT IN ('羽毛球男子单打', '羽毛球女子单打', '羽毛球混合双打') AND 银牌获得者id = '他的银牌获得者id'
+SELECT 赛事名称 FROM 奥运会冠亚军 WHERE 冠军国家 = '中国' AND 运动员夺冠次数 >= 2 AND 赛事id NOT IN ('奥运会', '世界杯')
+SELECT 赛事数量 FROM 重要赛事 WHERE 赛事id NOT IN ('奥运会', '世界杯')
+
+SELECT 名称 FROM 台风；
+SELECT 登陆强度 FROM 台风；
+SELECT 登陆强度， COUNT(*) as num FROM 台风 GROUP BY 登陆强度 HAVING COUNT(*) <= 2
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+
+SELECT t1.省份 FROM "台风影响的中国省份" t1 INNER JOIN "台风影响的国家" t2 ON t1.台风id = t2.台风id WHERE t2.国家 = '中国' GROUP BY t1.省份 HAVING COUNT(DISTINCT t2.国家) = (SELECT COUNT(DISTINCT t2.国家) FROM "台风影响的国家" t2 WHERE t2.国家 = '中国')
+SELECT t1.省份 FROM "台风影响的中国省份" t1 INNER JOIN "台风影响的国家" t2 ON t1.台风id = t2.台风id WHERE t2.国家 = '中国' GROUP BY t1.省份 HAVING MAX(t1.登陆强度) = (SELECT MAX(t1.登陆强度) FROM "台风影响的中国省份" t1 WHERE t1.省份 = t1.省份)
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+SQL NOT GET: may be TIMEOUT
+
+SQL NOT GET: may be TIMEOUT
+SELECT * FROM "台风影响的中国省份" AS c1 INNER JOIN "台风影响的国家" AS c2 ON c1.台风id = c2.台风id WHERE c2.经济损失 < 1000
+SELECT * FROM "台风影响的中国省份" AS c1 INNER JOIN "台风影响的国家" AS c2 ON c1.台风id = c2.台风id WHERE c2.经济损失 < 1000
+
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+NO SQL FOUND
+

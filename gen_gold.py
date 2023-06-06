@@ -1,5 +1,6 @@
 from skip_dbs import SkipDBs
 import json
+from config import CurrentConfig
 
 
 class GoldParser:
@@ -35,7 +36,7 @@ CurrentGoldParser = ChaseGoldParser
 
 
 def gen_gold():
-    parser = CurrentGoldParser(InputDir, GoldFile)
+    parser = CurrentGoldParser(CurrentConfig.InputDir, CurrentConfig.GoldFile)
     parser.smelt()
 
 

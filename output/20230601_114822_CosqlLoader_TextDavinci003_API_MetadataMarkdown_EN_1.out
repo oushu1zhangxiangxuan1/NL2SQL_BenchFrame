@@ -1,0 +1,71 @@
+SELECT car_makers.FullName, COUNT(model_list.ModelId) AS ModelCount FROM car_makers INNER JOIN model_list ON car_makers.Id = model_list.Maker GROUP BY car_makers.FullName
+SELECT car_names.Make, car_names.Model, COUNT(cars_data.Id) AS Popularity FROM cars_data INNER JOIN car_names ON cars_data.Id = car_names.MakeId GROUP BY car_names.Make, car_names.Model ORDER BY Popularity DESC
+SELECT car_makers.FullName, COUNT(model_list.ModelId) AS ModelCount FROM car_makers INNER JOIN model_list ON car_makers.Id = model_list.Maker GROUP BY car_makers.FullName HAVING COUNT(model_list.ModelId) >= 3
+
+SELECT Name FROM singer
+SELECT Singer_ID, COUNT(*) AS 'Number of Concerts' FROM singer_in_concert GROUP BY Singer_ID
+
+SELECT COUNT(DISTINCT Template_ID) FROM Templates
+SELECT COUNT(*) FROM Templates WHERE Template_ID IN (SELECT Template_ID FROM Documents GROUP BY Template_ID HAVING COUNT(*) > 1)
+SELECT D.Document_ID, D.Document_Name, T.Template_ID FROM Documents D INNER JOIN Templates T ON D.Template_ID = T.Template_ID WHERE T.Template_ID IN (SELECT Template_ID FROM Documents GROUP BY Template_ID HAVING COUNT(*) > 1)
+
+SELECT first_name FROM Students INNER JOIN Addresses ON Students.permanent_address_id = Addresses.address_id WHERE Addresses.country = 'Haiti'
+SELECT first_name FROM Students WHERE cell_mobile_number = '09700166582'
+SELECT last_name, line_1, line_2, line_3, city, zip_postcode, state_province_county, country FROM Students INNER JOIN Addresses ON Students.current_address_id = Addresses.address_id WHERE cell_mobile_number = '09700166582'
+SELECT email_address FROM Students WHERE cell_mobile_number = '09700166582'
+
+```SQL SELECT s.Name FROM stadium s LEFT JOIN concert c ON s.Stadium_ID = c.Stadium_ID WHERE c.Year <> '2014' ``
+SQL SELECT Capacity FROM stadium WHERE Name = 'Balmoor'
+SQL SELECT c.Theme FROM concert c INNER JOIN stadium s ON c.Stadium_ID = s.Stadium_ID WHERE s.Name = 'Balmoor'
+
+SELECT COUNT(*) FROM Dogs d INNER JOIN Treatments t ON d.dog_id = t.dog_id WHERE d.gender = 'F'
+SELECT d.age FROM Dogs d INNER JOIN Treatments t ON d.dog_id = t.dog_id WHERE d.gender = 'F'
+SELECT MAX(d.weight) FROM Dogs d WHERE d.age = '2'
+
+SELECT COUNT(*) FROM Teacher
+SELECT COUNT(*) FROM Course
+SELECT Teacher.Name, COUNT(Course_Arrange.Course_ID) FROM Teacher JOIN Course_Arrange ON Teacher.Teacher_ID = Course_Arrange.Teacher_ID GROUP BY Teacher.Name
+SELECT Teacher.Name, Teacher.Age FROM Teacher
+
+SELECT latin_commander FROM battle WHERE name = 'Battle of Serres'
+SELECT result FROM battle WHERE date = '31st January 1206'
+SELECT bulgarian_commander FROM battle WHERE date = 'June 1205'
+SELECT name FROM battle WHERE latin_commander = 'Baldwin 1'
+
+``SELECT COUNT(*) FROM TV_Channel;``
+``SELECT Language FROM TV_Channel WHERE series_name = 'Sky Music';``
+``SELECT Title FROM Cartoon WHERE id = 2.0;``
+
+SELECT MAX(Horsepower) FROM cars_data
+SELECT COUNT(*) FROM cars_data
+SELECT SUM(Cylinders) FROM cars_data
+
+SELECT District, MAX(Number_products) FROM shop GROUP BY District
+SELECT Manager_name FROM shop WHERE Number_products = (SELECT MAX(Number_products) FROM shop)
+SELECT Number_products FROM shop WHERE Manager_name = (SELECT Manager_name FROM shop WHERE Number_products = (SELECT MAX(Number_products) FROM shop))
+SELECT Location FROM shop WHERE District = (SELECT District FROM shop WHERE Number_products = (SELECT MAX(Number_products) FROM shop))
+SELECT Shop_ID FROM shop WHERE Number_products = (SELECT MAX(Number_products) FROM shop)
+
+SELECT AVG(Population) FROM city
+SELECT District FROM city WHERE Population > (SELECT AVG(Population) FROM city)
+SELECT District, COUNT(*) FROM city WHERE Population > (SELECT AVG(Population) FROM city) GROUP BY District
+
+SELECT Name FROM country WHERE GovernmentForm = 'US Territory'
+SELECT Name, GNP, Population FROM country WHERE GovernmentForm = 'US Territory'
+SELECT AVG(GNP), SUM(Population) FROM country WHERE GovernmentForm = 'US Territory'
+
+SELECT SUM(SurfaceArea) FROM country WHERE Continent = 'Asia'
+SELECT LocalName FROM country
+SELECT Code FROM country WHERE Name = 'Aruba'
+
+SELECT COUNT(*) FROM shop
+SELECT Name FROM shop
+SELECT Shop_ID, COUNT(Employee_ID) FROM hiring GROUP BY Shop_ID
+
+SELECT Name FROM singer
+SELECT Song_release_year FROM singer WHERE Name = 'Joe Sharp' AND Song_Name = 'You'
+SELECT COUNT(*) FROM singer_in_concert sic INNER JOIN singer s ON sic.Singer_ID = s.Singer_ID WHERE s.Name = 'Joe Sharp'
+SELECT Country FROM singer WHERE Name = 'Joe Sharp'
+
+SELECT Continent FROM continents
+SELECT ContId, Continent, COUNT(*) AS NumCountries FROM continents JOIN countries ON continents.ContId = countries.Continent GROUP BY ContId

@@ -1,21 +1,10 @@
-from input import ChaseDataLoader
+from input import *
 from prompt import *  # BaseSqlPrompt_1, BaseSqlPrompt_2, BaseSqlPrompt_3, BaseSqlPrompt_4, BaseSqlPromptEn_1
-from model import ChatGLM6B_API
+from model import *
 import os
 from datetime import datetime
-from prompt_mode import PromptMode
-
-# 获取当前脚本的绝对路径
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# 将当前路径设置为环境变量
-os.environ["NL2SQL_BENCHFRAME_HOME"] = current_dir
-
-
-def BF_ABS_PATH(relative_path):
-    return os.path.abspath(
-        os.path.join(os.environ.get("NL2SQL_BENCHFRAME_HOME", ""), relative_path)
-    )
+from prompt_mode import *
+from utils import *
 
 
 class BenchConfig:
@@ -52,17 +41,18 @@ def getPredictJsonL(config):
     )
 
 
-def getPredictOutFile(config):
-    return os.path.join(
-        config.OutputDir,
-        "predict_%s_%s_%s_%s.out"
-        % (
+def getPredictOutFile(config, isTest):
+    fileName = "%s_%s_%s_%s.out" % (
+            datetime.now().strftime("%Y%m%d_%H%M%S"),
             get_variable_name(config.InputDataLoader),
             get_class_name(config.Model),
             get_variable_name(config.Prompter),
-            datetime.now().strftime("%Y%m%d_%H%M%S"),
-        ),
-    )
+        )
+    if isTest:
+        fileName = 'test_'+fileName
+    return os.path.join(
+        config.OutputDir,
+        fileName)
 
 
 class ChaseConfig(BenchConfig):
@@ -74,35 +64,154 @@ class ChaseConfig(BenchConfig):
     Prompter = MetadataPrompt_1
     Model = ChatGLM6B_API("http://localhost:7861/chat-docs/chatno")
     PromptMode = PromptMode.Single
-    # SkipDBs = [
-    #     "tvshow",
-    #     "concert_singer",
-    #     "car_1",
-    #     "orchestra",
-    #     "museum_visit",
-    #     "singer",
-    #     "cre_Doc_Template_Mgt",
-    #     "real_estate_properties",
-    #     "employee_hire_evaluation",
-    #     "poker_player",
-    #     "student_transcripts_tracking",
-    #     "pets_1",
-    #     "flight_2",
-    #     "dog_kennels",
-    #     "course_teach",
-    #     "network_1",
-    #     "world_1",
-    #     "voter_1",
-    #     "wta_1",
-    #     "battle_death",
-    # ]
-    MetadataFile = "data/chase/chase_meta_sql.json"
-
-    def __init__(self) -> None:
-        super().__init__()
+    MetadataFile = BF_ABS_PATH("data/chase/chase_meta_sql.json")
+    ParseQueryFunc = parseOneLineSqlFromQuery
+    TurnMode = TurnMode.Multi
 
 
-CurrentConfig = ChaseConfig
+class ChaseConfig_SOCK(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("./data/chase/ChaseNoAscii/chase_dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("data/chase/gold_chase.out")
+    InputDataLoader = ChaseDataLoader
+    Prompter = MetadataPrompt_1
+    Model = ChatGLM6B_SOCK("ws://localhost:7862/chat-docs/chatno/socket")
+    PromptMode = PromptMode.Single
+    MetadataFile =  BF_ABS_PATH("data/chase/chase_meta_sql.json")
+    ParseQueryFunc = parseOneLineSqlFromQuery
+    TurnMode = TurnMode.Multi
+
+
+class ChaseConfig_TextDavinci003(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("./data/chase/ChaseNoAscii/chase_dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("data/chase/gold_chase.out")
+    InputDataLoader = ChaseDataLoader
+    Prompter = MetadataPrompt_2
+    Model = TextDavinci003_API(None)
+    PromptMode = PromptMode.Single
+    MetadataFile = BF_ABS_PATH("data/chase/chase_meta_sql.json")
+    ParseQueryFunc = parseSqlQueryRaw
+    TurnMode = TurnMode.Multi
+
+
+class CosqlConfig_TextDavinci003(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("data/cosql_dataset/sql_state_tracking/cosql_dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("data/cosql_dataset/sql_state_tracking/dev_gold.txt")
+    InputDataLoader = CosqlLoader
+    Prompter = MetadataMarkdown_EN_1
+    Model = TextDavinci003_API(None)
+    PromptMode = PromptMode.Single
+    MetadataFile = BF_ABS_PATH("data/cosql_dataset/meta_sql.json")
+    ParseQueryFunc = parseSqlQueryRaw
+    TurnMode = TurnMode.Multi
+
+
+class SpiderConfig_TextDavinci003(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("data/spider/dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("data/spider/dev_gold.sql")
+    InputDataLoader = SpiderLoader
+    Prompter = MetadataMarkdown_EN_1
+    Model = TextDavinci003_API(None)
+    PromptMode = PromptMode.Single
+    MetadataFile = BF_ABS_PATH("data/spider/tables.json")
+    ParseQueryFunc = parseSqlQueryRaw
+    TurnMode = TurnMode.Single
+
+
+class CosqlConfig_GPT35Turbo(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("data/cosql_dataset/sql_state_tracking/cosql_dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("data/cosql_dataset/sql_state_tracking/dev_gold.txt")
+    InputDataLoader = CosqlLoader
+    Prompter = MetadataMarkdown_EN_1
+    Model = GPT35Turbo_API(None)
+    PromptMode = PromptMode.Single
+    MetadataFile = BF_ABS_PATH("data/cosql_dataset/meta_sql.json")
+    ParseQueryFunc = parseSqlQueryRaw
+    TurnMode = TurnMode.Multi
+
+
+class SpiderConfig_GPT35Turbo(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("data/spider/dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("data/spider/dev_gold.sql")
+    InputDataLoader = SpiderLoader
+    Prompter = MetadataMarkdown_EN_1
+    Model = GPT35Turbo_API(None)
+    PromptMode = PromptMode.Single
+    MetadataFile = BF_ABS_PATH("data/spider/meta_sql.json")
+    ParseQueryFunc = parseSqlQueryRaw
+    TurnMode = TurnMode.Single
+
+
+
+class ChaseConfig_GPT35Turbo(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("./data/chase/ChaseNoAscii/chase_dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("data/chase/gold_chase.out")
+    InputDataLoader = ChaseDataLoader
+    Prompter = MetadataMarkdown_EN_1
+    Model = GPT35Turbo_API(None)
+    PromptMode = PromptMode.Single
+    MetadataFile = BF_ABS_PATH("data/chase/chase_meta_sql.json")
+    ParseQueryFunc = parseSqlQueryRaw
+    TurnMode = TurnMode.Multi
+
+
+class CosqlConfig_ChatGLM6B(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("data/cosql_dataset/sql_state_tracking/cosql_dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("data/cosql_dataset/sql_state_tracking/dev_gold.txt")
+    InputDataLoader = CosqlLoader
+    Prompter = MetadataMarkdown_CH_1_GLM
+    Model = ChatGLM6B_API("http://localhost:7861/chat-docs/chatno")
+    PromptMode = PromptMode.Single
+    MetadataFile = BF_ABS_PATH("data/cosql_dataset/meta_sql.json")
+    ParseQueryFunc = parseSqlQueryRaw
+    TurnMode = TurnMode.Multi
+
+
+class SpiderConfig_ChatGLM6B(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("data/spider/dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("data/spider/dev_gold.sql")
+    InputDataLoader = SpiderLoader
+    # Prompter = MetadataMarkdown_EN_1
+    Prompter = MetadataMarkdown_CH_1_GLM
+    Model = ChatGLM6B_API("http://localhost:7861/chat-docs/chatno")
+    PromptMode = PromptMode.Single
+    MetadataFile = BF_ABS_PATH("data/spider/meta_sql.json")
+    ParseQueryFunc = parseSqlQueryRaw
+    TurnMode = TurnMode.Single
+
+
+class ChaseConfig_ChatGLM6B(BenchConfig):
+    # TODO: 改为通过基类的staticmethod进行访问
+    InputDir = BF_ABS_PATH("./data/chase/ChaseNoAscii/chase_dev.json")
+    OutputDir = BF_ABS_PATH("./output")
+    GoldFile = BF_ABS_PATH("./gold/gold_chase.out")
+    InputDataLoader = ChaseDataLoader
+    Prompter = MetadataMarkdown_CH_1_GLM
+    Model = ChatGLM6B_API("http://localhost:7861/chat-docs/chatno")
+    PromptMode = PromptMode.Single
+    MetadataFile = BF_ABS_PATH("data/chase/chase_meta_sql.json")
+    ParseQueryFunc = parseOneLineSqlFromQuery
+    TurnMode = TurnMode.Multi
+
+# CurrentConfig = ChaseConfig_SOCK
+CurrentConfig = CosqlConfig_ChatGLM6B
 
 
 if "__main__" == __name__:
